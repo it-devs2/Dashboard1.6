@@ -120,8 +120,7 @@ const pendingPercentEl = document.getElementById('pendingPercent');
 const init = async () => {
     setupEventListeners();
 
-    const now = new Date();
-    yearFilter.value = now.getFullYear().toString();
+    // Do not preselect the current year — defaults should start at 'all'
 
     initCharts();
 
@@ -134,6 +133,23 @@ const init = async () => {
             dayFilter.appendChild(opt);
         }
     }
+
+    // Ensure all filters default to 'all' on initial load
+    const setDefaultAll = (id) => {
+        const el = document.getElementById(id);
+        if (el) el.value = 'all';
+    };
+
+    setDefaultAll('paymentStatusFilter');
+    setDefaultAll('categoryFilter');
+    setDefaultAll('dayFilter');
+    setDefaultAll('monthFilter');
+    setDefaultAll('yearFilter');
+    setDefaultAll('payDocStatusFilter');
+    setDefaultAll('payDocMonthFilter');
+    setDefaultAll('payDocYearFilter');
+    setDefaultAll('payDocCategoryFilter');
+    setDefaultAll('payDocUrgencyFilter');
 
     if (GOOGLE_APP_SCRIPT_URL === 'YOUR_WEB_APP_URL_HERE') {
         document.getElementById('setupModal').classList.remove('hidden');
