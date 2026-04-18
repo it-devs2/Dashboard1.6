@@ -1,0 +1,4318 @@
+[hidden] {
+    display: none !important;
+}
+
+:root {
+    --bg-main: #0a0a0f;
+    --bg-card: rgba(25, 25, 35, 0.7);
+    --border-color: rgba(255, 255, 255, 0.08);
+    --text-main: #f0f0f5;
+    --text-muted: #8e8e9e;
+
+    --accent-primary: #6366f1;
+    /* Indigo */
+    --accent-glow: rgba(99, 102, 241, 0.4);
+
+    --color-total: #8b5cf6;
+    /* Purple */
+    --color-overdue: #ef4444;
+    /* Red */
+    --color-ontime: #10b981;
+    /* Emerald */
+    --color-notdue: #3b82f6;
+    /* Blue */
+
+    --font-heading: 'Inter', sans-serif;
+    --font-body: 'Prompt', sans-serif;
+}
+
+/* Premium tokens for Advanced Search component */
+:root {
+    --brand-sapphire: #0B1F3B;
+    --brand-matte: #0B0E14;
+    --brand-gold: #D4AF37;
+    --brand-ice: #F6FBFF;
+    --glass-bg-adv: rgba(255, 255, 255, 0.03);
+    --glass-border-adv: rgba(255, 255, 255, 0.06);
+    --accent-gold-glow: rgba(212, 175, 55, 0.12);
+    --r-pill: 18px;
+    --shadow-studio: 0 10px 30px rgba(2, 8, 20, 0.6);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Animated background orbs */
+body::before,
+body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+    z-index: 0;
+    animation: orbFloat 8s ease-in-out infinite;
+}
+
+body::before {
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+    top: -100px;
+    left: -100px;
+    animation-duration: 10s;
+}
+
+body::after {
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, transparent 70%);
+    bottom: -150px;
+    right: -150px;
+    animation-duration: 14s;
+    animation-delay: -4s;
+}
+
+@keyframes orbFloat {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(30px, -30px) scale(1.05);
+    }
+
+    66% {
+        transform: translate(-20px, 20px) scale(0.97);
+    }
+}
+
+.dashboard-container {
+    position: relative;
+    z-index: 1;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    background-image:
+        radial-gradient(circle at 15% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+    overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+    font-family: var(--font-heading);
+    font-weight: 600;
+}
+
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 20px;
+}
+
+/* Header & Filters */
+.top-nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 20px;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    position: relative;
+    z-index: 1100; /* Increased to stay above main content cards */
+    overflow: visible;
+    opacity: 0; /* Hide initially */
+    transition: opacity 0.5s ease;
+    animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dashboard-ready .top-nav {
+    opacity: 1;
+}
+
+.top-nav::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.03), transparent);
+    animation: shimmerNav 5s ease-in-out infinite;
+}
+
+@keyframes shimmerNav {
+    0% {
+        left: -100%;
+    }
+
+    100% {
+        left: 200%;
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes entrance {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+        filter: blur(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: blur(0);
+    }
+}
+
+@keyframes shimmerEffect {
+    0% { background-position: -468px 0; }
+    100% { background-position: 468px 0; }
+}
+
+@keyframes cardGlow {
+    0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.1); }
+    50% { box-shadow: 0 0 35px rgba(99, 102, 241, 0.25); }
+}
+
+@keyframes updateFlash {
+    0% { opacity: 0.5; transform: scale(0.99); }
+    100% { opacity: 1; transform: scale(1); }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
+
+.logo h1 {
+    font-size: clamp(18px, 4vw, 24px);
+    letter-spacing: 0.5px;
+}
+
+.logo .header-search {
+    display: flex;
+    align-items: center;
+    margin-left: 6px;
+    position: relative;
+}
+
+.logo .header-search .search-box {
+    min-width: 240px;
+    max-width: 420px;
+}
+
+.filter-section {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+}
+
+.filter-group label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.filter-section .filter-group select,
+.filter-section .filter-group input {
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 13.5px;
+    line-height: 1.4;
+    min-width: 90px;
+}
+
+select {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    padding-right: 32px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%238e8e9e' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+}
+
+select:focus,
+select:hover {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+select option {
+    background-color: #1a1a24;
+    color: white;
+}
+
+/* Search Input Styling */
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.search-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border: 1px solid var(--border-color);
+    padding: 6px 10px;
+    border-radius: 12px;
+    min-width: 200px;
+    max-width: 360px;
+    transition: box-shadow 0.2s ease, transform 0.15s ease, border-color 0.15s ease;
+    backdrop-filter: blur(6px);
+}
+
+.search-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    font-size: 18px;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+}
+
+.search-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--text-main);
+    font-size: 14px;
+    padding: 6px 0;
+    width: 220px;
+    min-width: 100px;
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.35);
+}
+
+.search-clear {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    flex-shrink: 0;
+}
+
+.search-box:hover,
+.search-box:focus-within {
+    box-shadow: 0 10px 30px var(--accent-glow);
+    border-color: var(--accent-primary);
+    transform: translateY(-2px);
+}
+
+.search-box:focus-within .search-icon {
+    color: var(--accent-primary);
+}
+
+@media (max-width: 760px) {
+    .search-box {
+        max-width: 240px;
+        min-width: 140px;
+    }
+
+    .filter-section {
+        gap: 10px;
+    }
+}
+
+/* Header search specific styling for prominent placement */
+.filter-group.header-search {
+    position: relative;
+}
+
+.filter-group.header-search .search-box {
+    min-width: 200px;
+    max-width: 380px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    box-shadow: 0 8px 30px rgba(2, 8, 20, 0.55);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.filter-group.header-search .search-icon {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 18px;
+}
+
+.filter-group.header-search .search-input {
+    width: 220px;
+    min-width: 140px;
+}
+
+.filter-group.header-search .search-clear {
+    font-size: 14px;
+}
+
+/* Make dropdown width match search box when possible */
+.filter-group.header-search .creditor-dropdown {
+    width: 100%;
+    max-width: 520px;
+    left: 0;
+}
+
+/* Chip visual tweaks */
+.selected-chips .chip {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 6px 10px;
+}
+
+.selected-chips .chip .chip-remove {
+    font-weight: 700;
+    margin-left: 6px;
+}
+
+/* Overdue Range filter specific styling - PREMIUM UI */
+.filter-group.header-overdue {
+    position: relative;
+}
+
+.filter-group.header-overdue .search-box {
+    min-width: 160px;
+    max-width: 280px;
+    cursor: pointer;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.filter-group.header-overdue .search-input {
+    cursor: pointer;
+    width: 100%;
+}
+
+.filter-group.header-overdue .creditor-dropdown {
+    width: 480px;
+    left: 0;
+    background: rgba(15, 15, 25, 0.95);
+    backdrop-filter: blur(25px);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 1px rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 12px;
+}
+
+.creditor-dropdown-header strong {
+    font-size: 15px;
+    background: linear-gradient(90deg, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+}
+
+.clear-overdue-btn {
+    background: rgba(239, 68, 68, 0.1);
+    color: #f87171;
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    padding: 5px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.clear-overdue-btn:hover {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+}
+
+#overdueListPanel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    padding: 12px 6px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+
+/* Custom Checkbox Design */
+.overdue-item-custom {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.overdue-item-custom:hover {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.25);
+    transform: translateY(-1px);
+}
+
+.overdue-item-custom input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-visual {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(148, 163, 184, 0.4);
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.overdue-item-custom input[type="checkbox"]:checked + .checkbox-visual {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+}
+
+.overdue-item-custom input[type="checkbox"]:checked + .checkbox-visual::after {
+    content: '\eb7a'; /* check icon */
+    font-family: 'boxicons';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(1.1);
+    font-size: 14px;
+    color: white;
+}
+
+.overdue-label-text {
+    font-size: 14px;
+    color: var(--text-main);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+/* Custom Scrollbar */
+#overdueListPanel::-webkit-scrollbar {
+    width: 4px;
+}
+#overdueListPanel::-webkit-scrollbar-track {
+    background: transparent;
+}
+#overdueListPanel::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.2);
+    border-radius: 10px;
+}
+#overdueListPanel::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+.refresh-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    margin-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+#refreshBtn {
+    min-width: 180px;
+    justify-content: center;
+}
+
+@media (max-width: 760px) {
+    .filter-group.header-overdue .creditor-dropdown {
+        width: 280px;
+        left: auto;
+        right: 0;
+    }
+    #overdueListPanel {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Advanced Search & Filter component */
+.adv-search {
+    width: 100%;
+    max-width: 980px;
+    margin: 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.adv-search__segmented {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.seg-btn {
+    background: transparent;
+    color: var(--brand-ice);
+    border-radius: 999px;
+    padding: 8px 12px;
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 160ms ease;
+}
+
+.seg-btn.is-active {
+    background: linear-gradient(90deg, rgba(11, 31, 59, 0.92), rgba(12, 35, 64, 0.6));
+    box-shadow: 0 6px 18px rgba(11, 31, 59, 0.45);
+    border: 1px solid rgba(212, 175, 55, 0.14);
+    color: var(--brand-ice);
+}
+
+.adv-search__inner {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.search-field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    background: linear-gradient(180deg, var(--glass-bg-adv), rgba(255, 255, 255, 0.01));
+    border-radius: var(--r-pill);
+    border: 1px solid var(--glass-border-adv);
+    backdrop-filter: blur(8px);
+    min-width: 420px;
+    box-shadow: var(--shadow-studio);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-field::after {
+    /* subtle brushed-metal hint */
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-image: repeating-linear-gradient(90deg, rgba(255, 255, 255, 0.01) 0 1px, transparent 1px 6px);
+    opacity: 0.08;
+}
+
+.search-field .icon-search {
+    display: inline-flex;
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.45);
+}
+
+.search-input-adv {
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: var(--brand-ice);
+    font-size: 14px;
+    width: 360px;
+}
+
+.search-field:focus-within {
+    box-shadow: 0 10px 40px var(--accent-gold-glow);
+    border: 1px solid rgba(212, 175, 55, 0.18);
+}
+
+.adv-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-filter {
+    background: transparent;
+    border: 0;
+    padding: 8px;
+    color: var(--brand-gold);
+    border-radius: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-filter:focus {
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.12);
+}
+
+.btn-action {
+    width: 44px;
+    height: 44px;
+    border-radius: 999px;
+    border: 0;
+    background: linear-gradient(135deg, #F3D88E, #D4AF37);
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.18);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.btn-action .arrow {
+    transition: transform 220ms cubic-bezier(.2, .9, .2, 1);
+}
+
+.btn-action:hover .arrow {
+    transform: translateX(4px);
+}
+
+.filter-panel {
+    position: absolute;
+    top: calc(100% + 12px);
+    left: 0;
+    width: 420px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border-radius: 12px;
+    border: 1px solid var(--glass-border-adv);
+    padding: 12px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 14px 40px rgba(2, 8, 20, 0.6);
+    z-index: 120;
+}
+
+.filter-panel__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.filter-panel__body {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filter-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.filter-panel__footer {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.btn-apply {
+    background: linear-gradient(90deg, #E8C77C, #D4AF37);
+    color: #071019;
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 0;
+    cursor: pointer;
+}
+
+.btn-reset {
+    background: transparent;
+    color: var(--brand-ice);
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    cursor: pointer;
+}
+
+@media (max-width:1000px) {
+    .adv-search {
+        max-width: 720px;
+    }
+
+    .search-input-adv {
+        width: 260px;
+    }
+}
+
+@media (max-width:700px) {
+    .adv-search {
+        max-width: 100%;
+        margin: 0 12px;
+    }
+
+    .adv-search__segmented {
+        display: none;
+    }
+
+    .search-input-adv {
+        width: 100%;
+    }
+
+    .filter-panel {
+        width: 100%;
+        left: 0;
+        top: calc(100% + 8px);
+    }
+}
+
+/* Selected chips for chosen creditors */
+.selected-chips {
+    display: flex;
+    gap: 8px;
+    margin-left: 10px;
+    align-items: center;
+    max-width: 360px;
+    flex-wrap: wrap;
+}
+
+.selected-chips .chip {
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-main);
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.selected-chips .chip .chip-name {
+    white-space: nowrap;
+    max-width: 160px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected-chips .chip .chip-remove {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+/* =========================================
+   CREDITOR DROPDOWN - PREMIUM REDESIGN
+   ========================================= */
+.creditor-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: 0;
+    width: 100%;
+    max-width: 520px;
+    background: rgba(12, 14, 24, 0.98);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 18px;
+    padding: 14px;
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.05),
+        inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    z-index: 5000;
+    max-height: 420px;
+    overflow: hidden;
+    display: none;
+    flex-direction: column;
+    animation: fadeInScale 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform-origin: top left;
+}
+
+.creditor-dropdown:not([hidden]) {
+    display: flex;
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Dropdown Header */
+.creditor-dropdown .creditor-dropdown-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 8px 12px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    margin-bottom: 4px;
+}
+
+.creditor-dropdown-header strong {
+    font-size: 14px;
+    background: linear-gradient(90deg, #fff, #94a3b8);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.3px;
+}
+
+/* Selected Count Badge */
+.creditor-dropdown-header .selected-count-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(99, 102, 241, 0.15);
+    color: #a5b4fc;
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    margin-left: 8px;
+    transition: all 0.2s ease;
+}
+
+.creditor-dropdown-header .selected-count-badge:empty {
+    display: none;
+}
+
+/* Clear Button */
+.creditor-dropdown .clear-selection-btn {
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.15);
+    color: #f87171;
+    padding: 5px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.creditor-dropdown .clear-selection-btn:hover {
+    background: #ef4444;
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    transform: translateY(-1px);
+}
+
+/* Creditor List Container */
+.creditor-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    overflow-y: auto;
+    padding: 6px 2px;
+    max-height: 300px;
+}
+
+/* Custom premium scrollbar */
+.creditor-list::-webkit-scrollbar {
+    width: 4px;
+}
+.creditor-list::-webkit-scrollbar-track {
+    background: transparent;
+}
+.creditor-list::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.3);
+    border-radius: 10px;
+}
+.creditor-list::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+/* Each Creditor Item */
+.creditor-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 42px;
+}
+
+.creditor-item:hover {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.2);
+    transform: translateY(-1px);
+}
+
+.creditor-item:focus-within {
+    background: rgba(99, 102, 241, 0.08);
+    border-color: rgba(99, 102, 241, 0.25);
+    outline: none;
+}
+
+/* Selected item state */
+.creditor-item.is-checked {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+/* Hide native checkbox */
+.creditor-item input[type="checkbox"] {
+    display: none;
+}
+
+/* Custom Checkbox Visual */
+.creditor-item .checkbox-visual {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(148, 163, 184, 0.35);
+    border-radius: 6px;
+    position: relative;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.creditor-item input[type="checkbox"]:checked + .checkbox-visual {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.35);
+}
+
+.creditor-item input[type="checkbox"]:checked + .checkbox-visual::after {
+    content: '\eb7a';
+    font-family: 'boxicons';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+    color: white;
+    line-height: 1;
+}
+
+/* Creditor Name Text */
+.creditor-item .creditor-name {
+    color: var(--text-main);
+    font-size: 13px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+    min-width: 0;
+    line-height: 1.4;
+}
+
+/* Empty state */
+.creditor-empty {
+    padding: 24px 12px;
+    color: var(--text-muted);
+    text-align: center;
+    font-size: 13px;
+}
+
+/* Chips */
+.selected-chips .chip {
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.12), rgba(139, 92, 246, 0.08));
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    padding: 5px 10px;
+    font-size: 12px;
+    border-radius: 999px;
+    color: #c7d2fe;
+}
+
+.selected-chips .chip .chip-remove {
+    color: rgba(255, 255, 255, 0.5);
+    transition: color 0.15s ease;
+}
+
+.selected-chips .chip .chip-remove:hover {
+    color: #f87171;
+}
+
+/* Highlight matched substring */
+.creditor-name .match,
+.match {
+    background: linear-gradient(90deg, rgba(99,102,241,0.18), rgba(139,92,246,0.14));
+    color: #fff;
+    padding: 1px 5px;
+    border-radius: 4px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(99,102,241,0.08);
+}
+
+@media (max-width: 760px) {
+    .creditor-dropdown {
+        max-width: 320px;
+        left: auto;
+        right: 0;
+    }
+}
+
+.date-filter-group input[type="text"] {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+.date-filter-group input[type="text"]:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.15);
+}
+
+.date-filter-group input[type="text"]::placeholder {
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.premium-btn {
+    background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+}
+
+.premium-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.premium-btn:active {
+    transform: translateY(1px);
+}
+
+/* Cards - New center layout */
+.summary-layout {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    align-items: center;
+    margin-bottom: 32px;
+    min-height: 400px;
+}
+
+.cards-column {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: 100%;
+    justify-content: center;
+}
+
+.cards-column .card {
+    flex: 1;
+}
+
+.card-center-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.card-total-circle {
+    width: 100%;
+    max-width: 360px;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
+    border-radius: 50% !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center;
+    gap: 6px !important;
+    padding: 20px !important;
+    flex-shrink: 0;
+    animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards, totalCardGlow 4s ease-in-out 1.2s infinite !important;
+}
+
+.card-total-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+}
+
+.card-total-inner h3 {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.85);
+    margin: 0;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+.card-total-inner h2 {
+    font-size: 34px;
+    color: white;
+    font-weight: 800;
+    word-break: break-word;
+    text-align: center;
+    margin: 0;
+    text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    letter-spacing: 0.5px;
+}
+
+.card-total-inner .percent-text {
+    font-size: 16px;
+    margin: 0;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.card-total-inner .card-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.05));
+    font-size: 36px;
+    margin-bottom: 12px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 30px 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-height: 150px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, opacity 0.5s ease;
+    position: relative;
+    z-index: 1; /* Low z-index to stay below dropdowns */
+    overflow: hidden;
+    opacity: 0; /* Hide initially */
+}
+
+.dashboard-ready .main-content {
+    opacity: 1;
+}
+
+/* Shimmer effect on card hover */
+.card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -80%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.05), transparent);
+    transform: skewX(-15deg);
+    transition: none;
+    pointer-events: none;
+}
+
+.card:hover::after {
+    animation: cardShimmer 0.6s ease forwards;
+}
+
+@keyframes cardShimmer {
+    to {
+        left: 160%;
+    }
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-icon {
+    width: 66px;
+    height: 66px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    flex-shrink: 0;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.card:hover .card-icon {
+    transform: scale(1.18) rotate(-4deg);
+}
+
+.card-info h3 {
+    font-size: 15px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+}
+
+.card-info h2 {
+    font-size: clamp(20px, 5vw, 28px);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    word-break: break-all;
+    line-height: 1.2;
+}
+
+/* Summary cards: keep title at top and push amount/summary to the bottom for tidy layout */
+.summary-layout .card-info {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.summary-layout .card-info h3 {
+    /* push the rest of the content down */
+    margin-bottom: auto;
+}
+
+.summary-layout .card-info h2 {
+    /* ensure the amount is visually grouped at the bottom */
+    margin-top: 6px;
+}
+
+.summary-layout .card-info .percent-text {
+    margin-top: 6px;
+    color: var(--text-muted);
+}
+
+/* Make the '犧｢犧ｱ犧ｹｸ｡犹謂ｸ籾ｸｶ犧ｸ≒ｸｳ犧ｫ犧吭ｸ' card amount right-aligned and closer to the card edge */
+.summary-layout .card-notdue {
+    padding-right: 18px;
+    /* slightly reduce right padding so number sits nearer the edge */
+}
+
+.summary-layout .card-notdue .card-info h2 {
+    width: 100%;
+    text-align: right;
+}
+
+.percent-text {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Colors for specific cards */
+.card-total {
+    background: linear-gradient(135deg, #1e1b4b, #4c1d95);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+    animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards, totalCardGlow 4s ease-in-out 1s infinite;
+}
+
+@keyframes totalCardGlow {
+
+    0%,
+    100% {
+        box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 8px 40px rgba(139, 92, 246, 0.45);
+    }
+}
+
+.card-total:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.5);
+}
+
+.card-total .card-info h3,
+.card-total .percent-text {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.card-total .card-info h2 {
+    color: white;
+    font-size: clamp(22px, 6vw, 32px);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+}
+
+.card-total .card-icon {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.card-overdue:hover {
+    box-shadow: 0 8px 25px rgba(239, 68, 68, 0.15);
+}
+
+.card-overdue .card-icon {
+    background: rgba(239, 68, 68, 0.1);
+    color: var(--color-overdue);
+}
+
+.card-ontime:hover {
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.15);
+}
+
+.card-ontime .card-icon {
+    background: rgba(16, 185, 129, 0.1);
+    color: var(--color-ontime);
+}
+
+.card-notdue:hover {
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.card-notdue .card-icon {
+    background: rgba(59, 130, 246, 0.1);
+    color: var(--color-notdue);
+}
+
+.card-nodate:hover {
+    box-shadow: 0 8px 25px rgba(245, 158, 11, 0.15);
+}
+
+/* Amber */
+.card-nodate .card-icon {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.card-early:hover {
+    box-shadow: 0 8px 25px rgba(168, 85, 247, 0.15);
+}
+
+/* Purple-ish/Pink */
+.card-early .card-icon {
+    background: rgba(168, 85, 247, 0.1);
+    color: #a855f7;
+}
+
+.card-pending:hover {
+    box-shadow: 0 8px 25px rgba(249, 115, 22, 0.2);
+}
+
+/* Orange */
+.card-pending .card-icon {
+    background: rgba(249, 115, 22, 0.12);
+    color: #f97316;
+}
+
+.card-pending .card-info h2 {
+    color: #fb923c;
+}
+
+/* Date Summary Section */
+.date-summary-section {
+    background: linear-gradient(180deg, rgba(19, 20, 34, 0.88), rgba(12, 13, 25, 0.96));
+    border: 1px solid rgba(99, 102, 241, 0.28);
+    border-radius: 22px;
+    padding: 20px;
+    margin-bottom: 40px;
+    /* Increased for bottom spacing */
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.08), 0 14px 28px rgba(0, 0, 0, 0.3), 0 0 58px rgba(88, 103, 247, 0.18);
+    position: relative;
+    overflow: visible;
+}
+
+.date-summary-section::before {
+    content: '';
+    position: absolute;
+    top: -30px;
+    right: -40px;
+    width: 220px;
+    height: 220px;
+    background: radial-gradient(circle at 20% 20%, rgba(99, 102, 241, 0.22), transparent 60%);
+    filter: blur(14px);
+    pointer-events: none;
+}
+
+.date-summary-header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 12px;
+}
+
+.date-summary-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-main);
+}
+
+.date-summary-title h3 {
+    font-size: clamp(18px, 2.3vw, 24px);
+    font-weight: 700;
+    color: #f8f8ff;
+    margin: 0;
+    letter-spacing: 0.04em;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.date-summary-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.date-filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 145px;
+    position: relative; /* Ensure absolute dropdowns are relative to this group */
+}
+
+/* Ensure the dropdown in Date Summary opens UPWARDS so it doesn't get cut off at the bottom of the page */
+.date-summary-filters .creditor-dropdown {
+    top: auto;
+    bottom: calc(100% + 12px);
+    margin-bottom: 0;
+    width: 420px;
+    max-height: 320px;
+    box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.9);
+    background: rgba(15, 17, 26, 0.98) !important;
+    z-index: 5000; 
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    animation: slideUpDropdown 0.35s cubic-bezier(0.165, 0.84, 0.44, 1);
+    transform-origin: bottom center;
+}
+
+.date-summary-filters .creditor-dropdown:not([hidden]) {
+    display: flex !important;
+}
+
+@keyframes slideUpDropdown {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.date-filter-group label {
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.date-summary-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 20px;
+    padding: 10px 5px 32px 5px; /* Room for scrollbar */
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+}
+
+/* Premium horizontal scrollbar for the carousel */
+.date-summary-grid::-webkit-scrollbar {
+    height: 6px;
+}
+.date-summary-grid::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 10px;
+}
+.date-summary-grid::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.25);
+    border-radius: 10px;
+}
+.date-summary-grid::-webkit-scrollbar-thumb:hover {
+    background: var(--accent-primary);
+}
+
+.date-card {
+    flex: 0 0 340px; /* Fixed width for horizontal layout */
+    scroll-snap-align: start;
+    min-height: 220px;
+    background: linear-gradient(135deg, rgba(28, 32, 58, 0.95), rgba(16, 18, 30, 0.98));
+    border: 1px solid rgba(88, 101, 242, 0.3);
+    border-radius: 22px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.date-card-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+@media (min-width: 1440px) {
+    .date-card {
+        min-height: 220px;
+        padding: 20px;
+    }
+
+    .date-card-top {
+        min-height: 80px;
+    }
+}
+
+
+.date-card::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    left: -8px;
+    right: -8px;
+    bottom: -8px;
+    border-radius: 18px;
+    background: linear-gradient(135deg, rgba(88, 103, 247, 0.25), rgba(93, 85, 242, 0.12));
+    z-index: -1;
+    filter: blur(1px);
+    opacity: 0;
+    transition: opacity 0.35s ease;
+}
+
+.date-card:hover::before {
+    opacity: 1;
+}
+
+.date-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 15px rgba(88, 101, 242, 0.2);
+    border-color: rgba(143, 148, 255, 0.6);
+}
+
+.date-card-top {
+    display: flex;
+    flex-direction: column;
+    /* Force stack to prevent overlap */
+    gap: 12px;
+    margin-bottom: 4px;
+}
+
+.date-card-date {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.date-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(168, 85, 247, 0.2));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #a5b4fc;
+    font-size: 20px;
+    border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.date-header-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.day-label {
+    color: #f8fafc;
+    font-weight: 800;
+    font-size: 16px;
+    letter-spacing: 0.5px;
+}
+
+.item-count {
+    color: rgba(148, 163, 184, 0.88);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.date-card-body {
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Prevent date parts from wrapping so day / month / year stay on one line */
+.day-label {
+    color: #eef2ff;
+    font-weight: 700;
+    font-size: 15px;
+    white-space: nowrap;
+}
+
+.item-count {
+    color: var(--text-muted);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+/* Ensure table headers and cells do not wrap date text; allow horizontal scrolling when needed */
+.table-responsive {
+    overflow-x: auto;
+}
+
+.data-table th,
+.data-table td {
+    white-space: nowrap;
+}
+
+@media (max-width: 520px) {
+    .date-text {
+        flex-direction: column;
+        gap: 4px;
+        align-items: flex-start;
+    }
+}
+
+.day-label {
+    color: #eef2ff;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.item-count {
+    color: var(--text-muted);
+    font-size: 13px;
+}
+
+.date-card-amount {
+    color: var(--accent-primary);
+    font-weight: 900;
+    font-size: 26px;
+    letter-spacing: -0.5px;
+    text-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    font-variant-numeric: tabular-nums;
+    margin-left: 2px;
+}
+
+.date-card-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    margin-top: 4px;
+}
+
+.date-status-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+
+.date-status-mini {
+    padding: 4px 9px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.date-status-mini.overdue {
+    background: rgba(239, 68, 68, 0.22);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.5);
+}
+
+.date-status-mini.ontime {
+    background: rgba(16, 185, 129, 0.20);
+    color: #6ee7b7;
+    border-color: rgba(16, 185, 129, 0.45);
+}
+
+.date-status-mini.notdue {
+    background: rgba(59, 130, 246, 0.21);
+    color: #93c5fd;
+    border-color: rgba(59, 130, 246, 0.4);
+}
+
+.date-status-mini.pending {
+    background: rgba(249, 115, 22, 0.21);
+    color: #fdba74;
+    border-color: rgba(249, 115, 22, 0.45);
+}
+
+.date-status-mini.nodate {
+    background: rgba(245, 158, 11, 0.20);
+    color: #fcd34d;
+    border-color: rgba(245, 158, 11, 0.45);
+}
+
+.date-status-mini.early {
+    background: rgba(168, 85, 247, 0.21);
+    color: #d8b4fe;
+    border-color: rgba(168, 85, 247, 0.45);
+}
+
+.date-card-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-start;
+    margin-top: 8px;
+}
+
+.date-action-view {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #cbd5e1;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.date-action-view:hover {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.4);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+}
+
+.date-summary-empty {
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.date-summary-empty i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+
+/* Removed duplicate duplicate date-card definitions */
+
+.date-status-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.date-status-mini {
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    font-size: 11px;
+    letter-spacing: 0.03em;
+    font-weight: 600;
+}
+
+.date-status-mini.overdue {
+    background: rgba(239, 68, 68, 0.18);
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.date-status-mini.ontime {
+    background: rgba(16, 185, 129, 0.17);
+    color: #6ee7b7;
+    border-color: rgba(16, 185, 129, 0.35);
+}
+
+.date-status-mini.notdue {
+    background: rgba(59, 130, 246, 0.16);
+    color: #93c5fd;
+    border-color: rgba(59, 130, 246, 0.33);
+}
+
+.date-status-mini.pending {
+    background: rgba(249, 115, 22, 0.16);
+    color: #fdba74;
+    border-color: rgba(249, 115, 22, 0.36);
+}
+
+.date-status-mini.nodate {
+    background: rgba(245, 158, 11, 0.16);
+    color: #fcd34d;
+    border-color: rgba(245, 158, 11, 0.35);
+}
+
+.date-status-mini.early {
+    background: rgba(168, 85, 247, 0.16);
+    color: #d8b4fe;
+    border-color: rgba(168, 85, 247, 0.35);
+}
+
+.date-card-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.date-card-actions button {
+    flex: 1;
+    border: 1px solid rgba(139, 92, 246, 0.45);
+    color: #dbeafe;
+    background: transparent;
+    font-size: 13px;
+    border-radius: 9px;
+    padding: 6px 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.date-card-actions button:hover {
+    background: rgba(99, 102, 241, 0.22);
+    border-color: rgba(99, 102, 241, 0.7);
+}
+
+.date-summary-empty {
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    padding: 24px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.date-summary-empty i {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+/* Charts */
+.charts-section {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.chart-container {
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-container h3 {
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--text-main);
+}
+
+.canvas-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* Loading state */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #0a0a0f; /* Fully opaque background to ensure zero content leaks through */
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+
+.loading-overlay.hidden {
+    display: none;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 3px solid rgba(99, 102, 241, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--accent-primary);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: modalBackdropIn 0.3s ease forwards;
+}
+
+@keyframes modalBackdropIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    border: 1px solid rgba(99, 102, 241, 0.25);
+    border-radius: 24px;
+    padding: 36px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+    animation: modalSlideIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Wider modal variant used for table/details so table can reflow instead of scrolling */
+.modal-content.table-modal {
+    max-width: 1200px;
+    width: calc(100% - 64px);
+    padding: 20px 22px;
+    overflow: visible;
+}
+
+@media (max-width: 900px) {
+    .modal-content.table-modal {
+        max-width: 100%;
+        width: calc(100% - 32px);
+        padding: 16px;
+    }
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: scale(0.88) translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.close-btn {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--text-muted);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.25s ease;
+}
+
+.close-btn:hover {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: rgba(239, 68, 68, 0.4);
+    color: #ef4444;
+    transform: rotate(90deg);
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    color: var(--text-main);
+    font-size: 20px;
+    padding-right: 40px;
+}
+
+.modal-content ol {
+    margin-left: 20px;
+    margin-bottom: 24px;
+    line-height: 1.6;
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.modal-content li {
+    margin-bottom: 8px;
+}
+
+/* Details Button & Table Modal */
+.details-btn {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: var(--font-body);
+    font-size: 12px;
+    cursor: pointer;
+    margin-top: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.3s ease;
+}
+
+.details-btn i {
+    font-size: 14px;
+}
+
+.details-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.table-modal {
+    max-width: 920px;
+    width: 96%;
+    background: linear-gradient(160deg, #12121f 0%, #1a1a2e 60%, #0d1b2a 100%);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6), 0 0 60px rgba(99, 102, 241, 0.08);
+}
+
+/* Glowing accent bar under title */
+#detailsModalTitle {
+    position: relative;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+    padding-right: 50px;
+    font-size: 22px;
+    background: linear-gradient(90deg, #a78bfa, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+#detailsModalTitle::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+    box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    max-height: 420px;
+    overflow-y: auto;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Scrollbar width */
+.table-responsive::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: rgba(139, 92, 246, 0.5);
+    border-radius: 10px;
+}
+
+/* Make table container allow wrapping instead of forcing horizontal scroll */
+.table-responsive {
+    overflow-x: visible;
+    max-width: 100%;
+}
+
+.data-table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    color: var(--text-main);
+    font-size: 12.5px;
+}
+
+.data-table th,
+.data-table td {
+    padding: 6px 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+.data-table th {
+    background: rgba(99, 102, 241, 0.12);
+    color: rgba(167, 139, 250, 0.9);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    backdrop-filter: blur(8px);
+}
+
+/* Two-line header variant (e.g., "犧ｧ犧ｱ犧吭ｸ�ｸ｣犧喀n犧≒ｸｳ犧ｫ犧吭ｸ�") */
+.data-table th.th-split {
+    white-space: normal;
+    text-align: center;
+    vertical-align: middle;
+    font-weight: 800;
+    font-size: 15px;
+    line-height: 1.05;
+    padding-top: 18px;
+    padding-bottom: 18px;
+}
+
+@media (max-width: 520px) {
+    .data-table th.th-split {
+        font-size: 13px;
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+}
+
+/* Details modal controls */
+.details-controls {
+    display: flex;
+    justify-content: flex-start;
+    gap: 12px;
+    margin-bottom: 18px;
+    padding-top: 4px;
+}
+
+.details-controls .view-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+/* Group summary bar - horizontal list of creditor totals */
+.group-summary-bar {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    padding: 10px 8px;
+    border-radius: 12px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    margin-bottom: 12px;
+    overflow-x: auto;
+}
+
+/* Print-only consolidated summary table (hidden on screen) */
+.print-summary-table-container {
+    display: none;
+}
+
+.print-summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 8px;
+    table-layout: fixed;
+}
+
+.print-summary-table th,
+.print-summary-table td {
+    padding: 6px 8px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.print-summary-table thead th {
+    background: #f1f5f9;
+    color: #0f172a;
+    font-weight: 800;
+}
+
+.print-summary-table tbody td {
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.print-summary-table tbody td:first-child {
+    text-align: left;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+.print-summary-table tbody td:nth-child(2) {
+    text-align: center;
+    width: 80px;
+    white-space: nowrap;
+}
+
+.print-summary-table tbody td:nth-child(3) {
+    text-align: right;
+    width: 150px;
+    white-space: nowrap;
+}
+
+.print-global-header-section {
+    display: none;
+}
+
+@media print {
+    .print-global-header-section {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        margin: 0 0 15px 0 !important;
+        page-break-after: auto !important;
+    }
+
+    .print-summary-table-container {
+        display: block !important;
+        position: relative !important;
+        margin: 10px 0 12px 0 !important;
+    }
+}
+
+.group-summary-bar::-webkit-scrollbar {
+    height: 8px;
+}
+
+.group-summary-bar::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.25);
+    border-radius: 6px;
+}
+
+.group-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--text-main);
+    padding: 6px 12px;
+    min-width: 170px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+    border-radius: 10px;
+    text-align: left;
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+/* Floating action button (FAB) */
+.fab {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: none;
+    background: linear-gradient(135deg, var(--accent-primary), #8b5cf6);
+    color: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 6px 20px rgba(99,102,241,0.18);
+    z-index: 99999;
+    cursor: pointer;
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+
+.fab:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 38px rgba(99,102,241,0.25);
+}
+
+@media (max-width: 520px) {
+    .fab {
+        right: 12px;
+        bottom: 12px;
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+    }
+}
+
+/* Responsive adjustments: ensure layout fits smaller screens (stack, shrink, prevent overflow) */
+/* Allow flex items to shrink and prevent fixed min-widths causing overflow */
+.filter-section .filter-group,
+.date-filter-group,
+.filter-group {
+    min-width: 0;
+}
+
+/* Make canvas responsive */
+.canvas-wrapper canvas {
+    max-width: 100%;
+    height: auto !important;
+}
+
+/* Center the total card when stacked */
+.card-total-circle {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 1100px) {
+    .dashboard-container {
+        max-width: 100%;
+        padding: 12px;
+    }
+
+    /* Stack summary cards vertically on small/medium screens */
+    .summary-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+        min-height: auto;
+        align-items: stretch;
+    }
+
+    .card {
+        padding: 18px;
+        min-height: auto;
+    }
+
+    .card-total-circle {
+        max-width: 340px;
+    }
+
+    .cards-column {
+        gap: 12px;
+    }
+
+    /* Stack charts */
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-container {
+        padding: 18px;
+    }
+
+    .canvas-wrapper {
+        height: 260px;
+    }
+
+    /* Make date summary vertical instead of horizontal carousel to avoid overflow */
+    .date-summary-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        overflow-x: hidden;
+        padding-bottom: 6px;
+    }
+
+    .date-card {
+        flex: 0 0 auto;
+        width: 100%;
+        max-width: 100%;
+        min-height: auto;
+    }
+
+    /* Filters wrap more cleanly */
+    .date-summary-filters {
+        gap: 8px;
+        align-items: stretch;
+    }
+
+    .filter-section {
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+
+    .filter-group {
+        width: auto;
+        min-width: 0;
+    }
+
+    .filter-group.header-search .search-box,
+    .search-box {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+
+@media (max-width: 520px) {
+    .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .logo h1 {
+        font-size: 16px;
+    }
+
+    .card {
+        padding: 12px;
+    }
+
+    .card-icon {
+        width: 54px;
+        height: 54px;
+        font-size: 24px;
+    }
+
+    .card-total-inner h2 {
+        font-size: 22px;
+    }
+
+    .canvas-wrapper {
+        height: 200px;
+    }
+
+    .date-card {
+        padding: 14px;
+    }
+
+    .chart-container h3 {
+        font-size: 16px;
+    }
+
+    .group-summary-bar {
+        overflow-x: auto;
+    }
+}
+
+/* Extra safety: prevent any element from unnecessarily exceeding viewport width */
+html, body {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+.group-card .group-card-name {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--text-main);
+    /* Allow name to take remaining space and wrap up to 2 lines */
+    flex: 1 1 auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.15;
+}
+
+.group-card .group-card-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    justify-content: center;
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+.group-card .group-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+.group-card .group-total {
+    font-weight: 800;
+    color: var(--accent-primary);
+    white-space: nowrap;
+}
+
+.group-card.is-selected {
+    box-shadow: 0 8px 28px rgba(99, 102, 241, 0.12);
+    border-color: rgba(99, 102, 241, 0.28);
+}
+
+@media (max-width: 760px) {
+    .group-card {
+        min-width: 140px;
+        padding: 8px 10px;
+    }
+
+    .group-card .group-card-name {
+        font-size: 13px;
+    }
+}
+
+.data-table tbody tr {
+    transition: background 0.2s ease;
+}
+
+.data-table tbody tr:nth-child(odd) {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.data-table tbody tr:hover {
+    background: rgba(139, 92, 246, 0.08);
+}
+
+/* กำหนดความกว้างของคอลัมน์ในหน้าจอ (Desktop/Standard) ให้ครบ 7 คอลัมน์ */
+.data-table th:nth-child(1),
+.data-table td:nth-child(1) {
+    width: 8%;
+}
+
+.data-table th:nth-child(2),
+.data-table td:nth-child(2) {
+    width: 14%;
+}
+
+.data-table th:nth-child(3),
+.data-table td:nth-child(3) {
+    width: 20%;
+}
+
+.data-table th:nth-child(4),
+.data-table td:nth-child(4) {
+    width: 11%;
+}
+
+.data-table th:nth-child(5),
+.data-table td:nth-child(5) {
+    width: 13%;
+}
+
+.data-table th:nth-child(6),
+.data-table td:nth-child(6) {
+    width: 14%;
+    text-align: center !important;
+}
+
+.data-table th:nth-child(7),
+.data-table td:nth-child(7) {
+    width: 20%;
+    text-align: right !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 760px) {
+    .data-table {
+        font-size: 13px;
+    }
+
+    .data-table th:nth-child(1),
+    .data-table td:nth-child(1) {
+        width: 10%;
+    }
+
+    .data-table th:nth-child(2),
+    .data-table td:nth-child(2) {
+        width: 12%;
+    }
+
+    .data-table th:nth-child(3),
+    .data-table td:nth-child(3) {
+        width: 15%; /* รายละเอียดบนมือถือให้แคบลง */
+    }
+
+    .data-table th:nth-child(4),
+    .data-table td:nth-child(4) {
+        width: 10%;
+    }
+
+    .data-table th:nth-child(5),
+    .data-table td:nth-child(5) {
+        width: 13%;
+    }
+
+    .data-table th:nth-child(6),
+    .data-table td:nth-child(6) {
+        width: 12%;
+    }
+
+    .data-table th:nth-child(7),
+    .data-table td:nth-child(7) {
+        width: 28%; /* ให้ความสำคัญกับยอดเงินบนมือถือ */
+        text-align: right !important;
+    }
+
+    .modal-content.table-modal {
+        width: calc(100% - 24px);
+        padding: 12px;
+    }
+}
+
+/* Status cell: prevent overflow on screen, show ellipsis */
+.data-table .status-text {
+    display: inline-block;
+    max-width: 160px;
+    overflow: hidden;
+    white-space: nowrap;
+    vertical-align: middle;
+    font-size: 12px;
+    line-height: 1.1;
+    transition: font-size 120ms ease;
+}
+
+@media (max-width: 760px) {
+    .data-table .status-text {
+        max-width: 110px;
+        font-size: 12px;
+    }
+}
+
+/* Category + status inline wrapper */
+.cat-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.cat-pill {
+    background: rgba(255, 255, 255, 0.06);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 6px;
+}
+
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.status-label {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.due-date-cell {
+    text-align: center;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* Premium close button for details modal */
+#closeDetailsModalBtn {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    border: none;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    letter-spacing: 0.03em;
+    transition: all 0.3s ease;
+}
+
+#closeDetailsModalBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(99, 102, 241, 0.55);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    opacity: 0;
+    animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Override the total card to use both fadeInUp + glow */
+.card-total {
+    animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards, totalCardGlow 4s ease-in-out 1.2s infinite;
+}
+
+.card-overdue {
+    animation-delay: 0.2s;
+}
+
+.card-ontime {
+    animation-delay: 0.3s;
+}
+
+.card-notdue {
+    animation-delay: 0.4s;
+}
+
+.card-nodate {
+    animation-delay: 0.5s;
+}
+
+.card-early {
+    animation-delay: 0.6s;
+}
+
+.chart-container {
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
+}
+
+.chart-container:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+.chart-status {
+    animation-delay: 0.7s;
+}
+
+.chart-trend {
+    animation-delay: 0.8s;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .summary-layout {
+        grid-template-columns: 1fr;
+        gap: 32px;
+    }
+
+    .card-center-wrapper {
+        order: -1;
+    }
+
+    /* 犧ｧ犧�ｸ≒ｸ･犧｡犹�ｸ巵ｸｭ犧｢犧ｹ犹謂ｸ壟ｸ吭ｸｪ犧ｸ犧� */
+    .cards-column {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .cards-column .card {
+        flex: 1;
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 992px) {
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .filter-section {
+        width: 100%;
+        flex-wrap: wrap;
+    }
+
+    .filter-group {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .filter-group select {
+        width: 100%;
+    }
+
+    #refreshBtn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .top-nav {
+        margin-bottom: 20px;
+        padding: 15px;
+    }
+
+    .card-total-circle {
+        max-width: clamp(220px, 70vw, 280px);
+    }
+
+    .card-info h3 {
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-group {
+        min-width: 100% !important;
+    }
+
+    .logo i {
+        font-size: 22px;
+    }
+
+    .dashboard-container {
+        padding: 10px;
+    }
+}
+
+/* Print Signature Area - Hidden on screen, visible in print */
+.print-signature-area {
+    display: none;
+}
+
+/* Modal Footer & Luxury Button */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 15px;
+    padding: 20px 30px;
+    background: rgba(15, 17, 26, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.pdf-btn-luxury {
+    background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%) !important;
+    color: white !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3) !important;
+}
+
+.pdf-btn-luxury:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4) !important;
+    filter: brightness(1.1);
+}
+
+.pdf-btn-luxury i {
+    font-size: 18px;
+}
+
+/* Total Row Summary */
+.total-row-summary {
+    background: #0f172a !important;
+    /* 犧樅ｸｷ犹霞ｸ吭ｸｫ犧･犧ｱ犧�ｸｪ犧ｵ犹犧もｹ霞ｸ｡犹≒ｸ壟ｸ壟ｹ�ｸ吭ｸ｣犧ｹ犧� */
+    border-top: 1px solid rgba(99, 102, 241, 0.4) !important;
+}
+
+.total-label {
+    text-align: left;
+    font-weight: 700;
+    color: var(--text-main);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 6px 12px !important;
+}
+
+.total-amount-val {
+    text-align: right;
+    color: var(--accent-primary);
+    font-size: 15px;
+    /* Match body rows */
+    font-weight: 800;
+    white-space: nowrap;
+    padding: 6px 12px !important;
+    font-variant-numeric: tabular-nums;
+    font-family: inherit;
+}
+
+@media (max-width: 580px) {
+    .modal-footer {
+        flex-direction: column-reverse;
+        width: 100%;
+    }
+
+    .modal-footer button {
+        width: 100% !important;
+    }
+}
+
+/* ======================================================
+   PRINT STYLES (犧｣犧ｰ犧扉ｸｱ犧� Luxury Business Report)
+   ====================================================== */
+
+/* 犧金ｹ謂ｸｭ犧吭ｸｭ犧�ｸ�ｹ呉ｸ巵ｸ｣犧ｰ犧≒ｸｭ犧壟ｸ伶ｸｵ犹謂ｹ�ｸ癌ｹ霞ｸｪ犧ｳ犧ｫ犧｣犧ｱ犧壟ｸ樅ｸｴ犧｡犧樅ｹ呉ｹ犧伶ｹ謂ｸｲ犧吭ｸｱ犹霞ｸ� 犹犧｡犧ｷ犹謂ｸｭ犹≒ｸｪ犧扉ｸ�ｸ壟ｸ吭ｸｫ犧吭ｹ霞ｸｲ犧謂ｸｭ */
+.print-report-header-only,
+.print-branding-header {
+    display: none;
+}
+
+@page {
+    size: A4 portrait;
+    margin: 4mm;
+    /* much tighter for compact print */
+    /* Tighter margins to maximize content area */
+}
+
+@page :first {
+    margin-top: 6mm;
+    /* Even tighter on first page to prevent blank space */
+}
+
+@page :last {
+    margin-bottom: 15mm;
+}
+
+@media print {
+
+    html,
+    body {
+        height: auto !important;
+        overflow: visible !important;
+        background: #ffffff !important;
+        /* Force no background gradients or masks on body */
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        filter: none !important;
+    }
+
+    /* Remove decorative pseudo-elements (background orbs/gradients)
+       These fixed pseudo-elements often render as white/glowing spots in PDF */
+    body::before,
+    body::after,
+    .dashboard-container::before,
+    .dashboard-container::after,
+    .print-branding-header::before,
+    .print-branding-header::after {
+        display: none !important;
+        content: none !important;
+        background: none !important;
+        background-image: none !important;
+        -webkit-mask-image: none !important;
+        mask-image: none !important;
+        filter: none !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+    }
+
+    /* 犧金ｹ謂ｸｭ犧吭ｸ伶ｸｸ犧≒ｸｭ犧｢犹謂ｸｲ犧�ｸ壟ｸ吭ｸｫ犧吭ｹ霞ｸｲ犧謂ｸｭ犧伶ｸｵ犹謂ｹ�ｸ｡犹謂ｹ�ｸ癌ｹ謂ｸ歩ｸｲ犧｣犧ｲ犧�ｸ｣犧ｲ犧｢犧�ｸｲ犧� */
+    /* CRITICAL: Entirely remove normal dashboard elements from the layout flow in print */
+    .dashboard-container,
+    .sidebar,
+    .top-nav,
+    .summary-layout,
+    .charts-section,
+    .date-summary-section,
+    .modal-backdrop,
+    .loading-overlay,
+    .details-btn-wrapper,
+    .details-controls,
+    .modal-header-flex .premium-btn,
+    .modal-footer,
+    .pdf-btn-luxury,
+    h2#detailsModalTitle,
+    #dateDetailModalTitle,
+    h2#dateDetailModalTitle,
+    #closeDetailsModalBtn,
+    #closeDateDetailModalBtn,
+    .close-btn,
+    .close-details-btn,
+    .close-date-detail-btn {
+        display: none !important;
+        height: 0 !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        visibility: hidden !important;
+        position: static !important;
+        /* Reset position */
+    }
+
+    /* CRITICAL: ONLY print the modal that is currently active (NOT hidden) */
+    #detailsModal:not(.hidden),
+    #detailsModal:not(.hidden) *,
+    #dateDetailModal:not(.hidden),
+    #dateDetailModal:not(.hidden) * {
+        visibility: visible !important;
+    }
+
+    /* ENTIRELY hide any modal that is hidden, even in print mode */
+    #detailsModal.hidden,
+    #dateDetailModal.hidden {
+        display: none !important;
+        visibility: hidden !important;
+        height: 0 !important;
+        overflow: hidden !important;
+    }
+
+    #detailsModal:not(.hidden),
+    #dateDetailModal:not(.hidden) {
+        position: relative !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        background: #ffffff !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        z-index: auto !important;
+        min-height: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+        visibility: visible !important;
+        /* KILL THE FADE: Remove all masks and shadows */
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        box-shadow: none !important;
+        filter: none !important;
+    }
+
+    .modal-content.table-modal {
+        background: #ffffff !important;
+        border: none !important;
+        box-shadow: none !important;
+        color: #000000 !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-sizing: border-box !important;
+        max-width: 100% !important;
+        overflow: visible !important;
+        display: block !important;
+        position: relative !important;
+        transform: none !important;
+        min-height: auto !important;
+        /* KILL THE FADE: Reset masks and filters */
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        filter: none !important;
+    }
+
+    /* ============================================
+       犧ｫ犧ｱ犧ｧ犧｣犧ｲ犧｢犧�ｸｲ犧吭ｹ≒ｸ壟ｸ� Luxury (Flexbox - 犹�ｸ｡犹謂ｸ癌ｸ吭ｸ≒ｸｱ犧�)
+       ============================================ */
+    .print-premium-bar {
+        display: block !important;
+        height: 8pt !important;
+        background: linear-gradient(90deg, #4f46e5, #818cf8) !important;
+        width: 100% !important;
+        margin: 0 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .print-branding-header {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        gap: 0 !important;
+        width: 100% !important;
+        padding: 12pt 0 8pt 0 !important;
+        margin-bottom: 4pt !important;
+        border-bottom: 1px solid #e2e8f0 !important;
+        visibility: visible !important;
+        position: relative !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .branding-main {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        flex: 1 !important;
+    }
+
+    .branding-logo {
+        display: flex !important;
+        align-items: center !important;
+        gap: 10pt !important;
+    }
+
+    .branding-logo i {
+        font-size: 24pt !important;
+        color: #4f46e5 !important;
+        margin: 0 !important;
+    }
+
+    .branding-logo h1 {
+        font-size: 14pt !important;
+        font-weight: 800 !important;
+        color: #1a1a2e !important;
+        margin: 0 !important;
+        letter-spacing: 0.5pt !important;
+        line-height: 1.2 !important;
+        text-transform: uppercase !important;
+    }
+
+    .branding-logo h1 .report-badge {
+        display: block !important;
+        font-size: 9pt !important;
+        font-weight: 500 !important;
+        color: #64748b !important;
+        text-transform: none !important;
+        letter-spacing: 0 !important;
+        margin-top: 2pt !important;
+    }
+
+    .branding-meta {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        gap: 3pt !important;
+        flex-shrink: 0 !important;
+    }
+
+    .branding-meta .meta-item {
+        display: flex !important;
+        gap: 6pt !important;
+        font-size: 8.5pt !important;
+    }
+
+    .branding-meta .label {
+        color: #64748b !important;
+        font-weight: 500 !important;
+    }
+
+    .branding-meta .value {
+        color: #1a1a2e !important;
+        font-weight: 700 !important;
+        font-family: monospace !important;
+    }
+
+    .print-report-header-group {
+        display: block !important;
+        text-align: center !important;
+        margin-top: 15pt !important;
+        margin-bottom: 20pt !important;
+        border-bottom: 2pt solid #1e293b !important;
+        padding-bottom: 12pt !important;
+        width: 100% !important;
+    }
+
+    .print-report-title-label {
+        display: block !important;
+        visibility: visible !important;
+        color: #1a1a2e !important;
+        font-family: 'Prompt', sans-serif !important;
+        font-size: 20pt !important;
+        font-weight: 800 !important;
+        letter-spacing: 0.5pt !important;
+        margin: 0 !important;
+        padding-bottom: 4pt !important;
+        border: none !important;
+    }
+
+    .print-report-subtitle {
+        display: block !important;
+        font-size: 11pt !important;
+        color: #475569 !important;
+        margin-top: 5pt !important;
+        font-weight: 400 !important;
+    }
+
+    .print-date-val {
+        font-weight: 700 !important;
+    }
+
+    .print-filter-badge {
+        display: inline-block !important;
+        margin-left: 10pt !important;
+        font-style: italic !important;
+        color: #64748b !important;
+    }
+
+
+
+    .data-table th {
+        font-size: 11.5pt !important;
+        padding: 10pt 6pt !important;
+        background-color: #f8fafc !important;
+        color: #1a1a2e !important;
+        border: 1pt solid #cbd5e1 !important;
+    }
+
+    .data-table td {
+        font-size: 11pt !important;
+        padding: 8pt 6pt !important;
+        border: 1pt solid #e2e8f0 !important;
+        line-height: 1.4 !important;
+    }
+
+    .data-table tr {
+        page-break-inside: avoid !important;
+    }
+
+    /* ============================================
+       犧歩ｸｲ犧｣犧ｲ犧�ｹ≒ｸ壟ｸ� Compact 犧ｪ犧ｳ犧ｫ犧｣犧ｱ犧壟ｸもｹ霞ｸｭ犧｡犧ｹ犧･犹犧｢犧ｭ犧ｰ
+       ============================================ */
+    .table-responsive {
+        overflow: visible !important;
+        height: auto !important;
+        max-height: none !important;
+        width: 100% !important;
+        margin: 0 !important;
+        border: none !important;
+        padding: 0 !important;
+        position: static !important;
+        /* KILL THE FADE: Mandatory clean up for scroll hints */
+        mask-image: none !important;
+        -webkit-mask-image: none !important;
+        background: transparent !important;
+        box-shadow: none !important;
+    }
+
+    .data-table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        table-layout: fixed !important;
+        font-family: 'Prompt', sans-serif !important;
+        margin: 0 !important;
+        border: 2px solid #5b51d8 !important;
+        font-size: 11pt !important;
+    }
+
+    /* 犧≒ｸｳ犧ｫ犧吭ｸ扉ｸ�ｸｧ犧ｲ犧｡犧≒ｸｧ犹霞ｸｲ犧�ｹ≒ｸ歩ｹ謂ｸ･犧ｰ犧�ｸｭ犧･犧ｱ犧｡犧吭ｹ呉ｹ�ｸｫ犹霞ｸ樅ｸｭ犧扉ｸｵ A4 犹≒ｸ吭ｸｧ犧歩ｸｱ犹霞ｸ� (6 犧�ｸｭ犧･犧ｱ犧｡犧吭ｹ�) */
+    /* ปรับปรุงความกว้างของคอลัมน์สำหรับการพิมพ์ ให้ครบทั้ง 7 คอลัมน์ */
+    /* ปรับปรุงสัดส่วนคอลัมน์สำหรับการพิมพ์ เพื่อให้ชื่อเจ้าหนี้และรายละเอียดมีพื้นที่เพียงพอ */
+    /* ปรับปรุงสัดส่วนคอลัมน์สำหรับการพิมพ์ เพื่อความสวยงามและเว้นช่องไฟให้เหมาะสม */
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) th:nth-child(1),
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) td:nth-child(1) {
+        width: 14% !important; /* เลขที่เอกสาร (ID) - centered */
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) th:nth-child(2),
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) td:nth-child(2) {
+        width: 18% !important; /* เจ้าหนี้ (ชื่อบริษัท) */
+        word-break: break-word !important;
+    }
+
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) th:nth-child(3),
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) td:nth-child(3) {
+        width: 25% !important; /* รายละเอียด - WIDENED as requested */
+        word-break: break-word !important;
+    }
+
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) th:nth-child(4),
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) td:nth-child(4) {
+        display: none !important; /* หมวดหมู่ - HIDDEN in PDF as requested */
+    }
+
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) th:nth-child(5),
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) td:nth-child(5) {
+        width: 13% !important; /* วันที่ครบกำหนดชำระ */
+        text-align: center !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+    }
+
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) th:nth-child(6),
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) td:nth-child(6) {
+        width: 8% !important; /* เกินกำหนด */
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) th:nth-child(7),
+    .data-table:not(.grouped-mode):not(.grouped-mode-5col) td:nth-child(7) {
+        width: 22% !important; /* จำนวนเงิน - WIDENED for large numbers */
+        text-align: right !important;
+        white-space: nowrap !important;
+        padding-right: 8px !important;
+    }
+
+    /* Print styling rules specifically for Grouped Mode (3 columns) */
+    .data-table.grouped-mode th:nth-child(1),
+    .data-table.grouped-mode tbody td:nth-child(1) {
+        width: 60% !important; 
+        text-align: left !important;
+        word-break: break-word !important;
+    }
+
+    .data-table.grouped-mode th:nth-child(2),
+    .data-table.grouped-mode tbody td:nth-child(2) {
+        width: 12% !important; 
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+
+    .data-table.grouped-mode th:nth-child(3),
+    .data-table.grouped-mode tbody td:nth-child(3) {
+        width: 28% !important; /* MATCHED with JS */
+        text-align: right !important;
+        white-space: nowrap !important;
+        padding-right: 8px !important;
+    }
+
+    /* Print styling rules specifically for Grouped Mode 5 columns (Creditor Summary) */
+    .data-table.grouped-mode-5col th:nth-child(1),
+    .data-table.grouped-mode-5col tbody td:nth-child(1) {
+        width: 40% !important; 
+        text-align: left !important;
+        word-break: break-word !important;
+    }
+
+    .data-table.grouped-mode-5col th:nth-child(2),
+    .data-table.grouped-mode-5col tbody td:nth-child(2) {
+        width: 18% !important; 
+        text-align: center !important;
+        white-space: normal !important; 
+    }
+
+    .data-table.grouped-mode-5col th:nth-child(3),
+    .data-table.grouped-mode-5col tbody td:nth-child(3) {
+        width: 6% !important; 
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+
+    .data-table.grouped-mode-5col th:nth-child(4),
+    .data-table.grouped-mode-5col tbody td:nth-child(4) {
+        width: 12% !important; 
+        text-align: center !important;
+        white-space: nowrap !important;
+    }
+
+    .data-table.grouped-mode-5col th:nth-child(5),
+    .data-table.grouped-mode-5col tbody td:nth-child(5) {
+        width: 24% !important; 
+        text-align: right !important;
+        white-space: nowrap !important;
+        padding-right: 8px !important;
+    }
+    .data-table th {
+        background-color: #f1f5f9 !important;
+        color: #000000 !important;
+        border: 1px solid #5b51d8 !important;
+        padding: 8px 4px !important;
+        font-size: 9pt !important;
+        font-weight: 800 !important;
+        text-align: left !important;
+        vertical-align: middle !important;
+        position: static !important;
+        /* CRITICAL: Remove sticky */
+        top: auto !important;
+        backdrop-filter: none !important;
+        /* CRITICAL: Remove blur */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* 犧癌ｸｴ犧扉ｸもｸｭ犧壟ｸｪ犧ｳ犧ｫ犧｣犧ｱ犧壟ｸ�ｸｭ犧･犧ｱ犧｡犧吭ｹ呉ｹ≒ｸ｣犧� */
+    .data-table th:first-child,
+    .data-table td:first-child {
+        text-align: left !important;
+        padding-left: 2pt !important;
+    }
+
+
+    .data-table td {
+        border: 1px solid #cbd5e1 !important;
+        padding: 10px 8px !important;
+        font-size: 10pt !important;
+        color: #0f172a !important;
+        font-weight: 600 !important;
+        word-wrap: break-word !important;
+        white-space: normal !important;
+        vertical-align: middle !important;
+        text-align: left !important;
+    }
+
+    /* Make group summary text clearer in print */
+    .group-card .group-card-name {
+        font-size: 11pt !important;
+        color: #0f172a !important;
+        font-weight: 700 !important;
+        line-height: 1.15 !important;
+    }
+
+    .group-card .group-total {
+        font-size: 11pt !important;
+        color: #5b21b6 !important;
+        font-weight: 800 !important;
+    }
+
+    /* Ensure general print text is rendered crisply */
+    .modal-content.table-modal,
+    .modal-content.table-modal *,
+    .data-table th,
+    .data-table td {
+        -webkit-font-smoothing: antialiased !important;
+        text-rendering: optimizeLegibility !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    /* Print: allow status labels to wrap instead of overflowing */
+    .data-table .status-text {
+        white-space: normal !important;
+        word-wrap: break-word !important;
+        overflow: visible !important;
+        text-overflow: clip !important;
+    }
+
+    /* Numeric alignment improvements for amounts */
+    .data-table td.amount,
+    .data-table td:last-child,
+    .total-amount-val {
+        text-align: right !important;
+        vertical-align: middle !important;
+        white-space: nowrap !important;
+        font-variant-numeric: tabular-nums !important;
+        -moz-font-feature-settings: "tnum" 1 !important;
+        font-feature-settings: "tnum" 1 !important;
+        font-family: 'Prompt', 'Inter', monospace !important;
+        line-height: 1.2 !important;
+        padding-top: 8px !important;
+        padding-bottom: 8px !important;
+    }
+
+    /* Ensure total row cells are vertically centered */
+    .total-row-summary td,
+    .data-table tfoot td {
+        vertical-align: middle !important;
+    }
+
+    .total-label {
+        text-align: left !important;
+        padding-left: 12px !important;
+    }
+
+    .data-table tfoot td.total-amount-val {
+        text-align: right !important;
+        padding-right: 8px !important;
+        font-weight: 800 !important;
+        color: #5b21b6 !important;
+        width: 28% !important; /* Explicitly match Column 3 */
+        font-size: 11pt !important;
+    }
+
+    /* Specific column alignment for rows */
+    .data-table td:nth-child(4),
+    .data-table td:nth-child(5) {
+        text-align: center !important;
+        vertical-align: middle !important;
+    }
+
+    /* Ensure span inside centered td is also centered with breathing room */
+    .data-table td:nth-child(4) span.cat-pill {
+        display: inline-block !important;
+        margin: 0 auto !important;
+        padding: 4pt 8pt !important; /* More breathing room */
+        background-color: #f1f5f9 !important; /* Subtle background for print */
+        border-radius: 4px !important;
+        font-size: 9pt !important; /* Slightly smaller for premium look */
+        color: #334155 !important;
+        border: 0.5pt solid #e2e8f0 !important;
+    }
+
+    .data-table td:last-child {
+        text-align: right !important;
+    }
+
+    /* Ensure due-date column (5) has room to wrap in print */
+    .data-table th:nth-child(5),
+    .data-table td:nth-child(5) {
+        white-space: normal !important;
+        overflow: visible !important;
+        word-wrap: break-word !important;
+        word-break: break-word !important;
+    }
+
+    /* 犹≒ｸ籾ｸｧ犧歩ｸｲ犧｣犧ｲ犧�ｹ犧巵ｹ�ｸ吭ｸｪ犧ｵ犹犧扉ｸｵ犧｢犧ｧ犧≒ｸｱ犧� - 犧･犧壟ｸ≒ｸｲ犧｣犧ｪ犧･犧ｱ犧壟ｸｪ犧ｵ */
+    .data-table tbody tr:nth-child(odd) td {
+        background-color: #fafbfc !important;
+    }
+
+    .data-table tbody tr:nth-child(even) td {
+        background-color: #fafbfc !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* ============================================
+       犹≒ｸ籾ｸｧ犧｢犧ｭ犧扉ｸ｣犧ｧ犧｡ - Enhanced Page Break Protection
+       ============================================ */
+    .total-row-summary {
+        background-color: #f3e8ff !important;
+        border-top: 3px solid #7c3aed !important;
+        border-bottom: 3px solid #7c3aed !important;
+
+        /* CRITICAL: Never split total row across pages */
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .total-label {
+        color: #2d005b !important;
+        font-weight: 800 !important;
+        text-align: right !important;
+        padding: 8px 6px !important;
+        font-size: 9pt !important;
+        border: 1px solid #d8b4ff !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.8px !important;
+
+        /* Ensure text doesn't orphan */
+        page-break-inside: avoid !important;
+    }
+
+    .total-amount-val {
+        color: #5b21b6 !important;
+        font-weight: 900 !important;
+        font-size: 9pt !important;
+        text-align: right !important;
+        padding: 6px 6px !important;
+        border: 1px solid #d8b4ff !important;
+
+        /* Ensure amount cell stays intact */
+        page-break-inside: avoid !important;
+        white-space: nowrap !important;
+        overflow: visible !important;
+    }
+
+    /* ============================================
+       Footer 犧･犧�ｸ吭ｸｲ犧｡犧伶ｹ霞ｸｲ犧｢犧｣犧ｲ犧｢犧�ｸｲ犧�
+       ============================================ */
+
+    /* ============================================
+       PRINT REPORT CONTAINER - Core Block
+       ============================================ 
+       Wraps table + tfoot + signature area as
+       single undividable unit. If doesn't fit on
+       current page, entire block moves to next page.
+    */
+    .print-report-container {
+        width: 100% !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+
+        /* Block itself can break - footer block has protection */
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* ============================================
+       FOOTER BLOCK - Table Totals + Signatures
+       ============================================
+       Strategy: Keep TOTAL row with signature,
+       but allow flexible breaking based on available space.
+       Don't force entire block to avoid - let browser decide.
+    */
+    /* Strategy: Keep footer block (Totals + Signatures) from breaking apart */
+    .print-footer-block {
+        width: 100% !important;
+        display: block !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+        page-break-before: auto !important;
+        /* Let it move to next page together if needed */
+        margin: 0 !important;
+        padding: 0 !important;
+        position: relative !important;
+    }
+
+    /* Allow natural spacing in tbody - CRITICAL: FIXED BLANK PAGE ISSUE */
+    .data-table tbody {
+        page-break-inside: auto !important;
+        break-inside: auto !important;
+    }
+
+    /* ============================================
+       PAGE BREAK CONTROLS - Smart Strategy
+       Only show TOTAL on last table/last page
+       ============================================ */
+
+    /* Repeat header on each page */
+    .data-table thead {
+        display: table-header-group;
+    }
+
+    /* Individual data rows stay intact - prevents mid-row splitting */
+    .data-table tbody tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+    }
+
+    /* CRITICAL: Total row (tfoot) should only appear once at end */
+    .data-table tfoot {
+        display: table-row-group !important;
+        visibility: visible !important;
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+    }
+
+    .data-table tfoot tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+    }
+
+    .data-table tfoot td {
+        page-break-inside: avoid !important;
+    }
+
+    /* Strategy: Use CSS to manage footer visibility
+       tfoot should only show in print-report-container (last modal)
+       Hide tfoot in non-primary tables if multiple tables exist */
+
+    /* Apply to all tfoot cells for luxury consistency */
+    .data-table tfoot tr td {
+        border: 2px solid #5b51d8 !important;
+        /* Formal indigo border */
+        padding: 12px 10px !important;
+        font-size: 10.5pt !important;
+        font-weight: 800 !important;
+        background-color: #f8fafc !important;
+        /* Professional light gray */
+        color: #1e293b !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* Keep TOTAL row attached to signature if content is very long */
+    .data-table tfoot tr {
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+
+    /* ============================================
+       PRINT SIGNATURE AREA - Professional Footer
+       ============================================
+       Corporate-style signature section with:
+       - Equal spacing between 3 signature boxes
+       - Attached directly to TOTAL row (no gap)
+       - Maintains professional appearance
+    */
+
+    .print-signature-area {
+        display: block !important;
+        visibility: visible !important;
+        width: 100% !important;
+
+        /* Enhanced spacing to stay after the total strictly */
+        margin-top: 50px !important;
+        margin-bottom: 0 !important;
+        padding-top: 30px !important;
+        padding-bottom: 0 !important;
+
+        /* Formal separator line */
+        border-top: 2.5px solid #5b51d8 !important;
+
+        /* Flexible page break - allows natural flow but avoids breaking inside */
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+
+        position: relative !important;
+        clear: both !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    /* SIGNATURE GRID - 3-Column Balanced Layout (Using table for flawless page-break protection) */
+    .print-signature-grid {
+        display: table !important;
+        width: 100% !important;
+        table-layout: fixed !important;
+
+        /* Signature grid should stay together */
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+        page-break-before: auto !important;
+    }
+
+    /* INDIVIDUAL SIGNATURE BOX - Corporate Format */
+    .signature-box {
+        display: table-cell !important;
+        vertical-align: top !important;
+
+        /* Box protection - avoid breaking individual box */
+        page-break-inside: avoid !important;
+        break-inside: avoid-page !important;
+
+        /* Box styling */
+        text-align: center !important;
+        padding: 0 15px !important;
+    }
+
+    /* Title - Signature Role */
+    .signature-box p.title {
+        margin: 0 !important;
+        padding: 0 0 45px 0 !important;
+
+        font-family: 'Prompt', sans-serif !important;
+        font-size: 10.5pt !important;
+        font-weight: 800 !important;
+        color: #0f172a !important;
+        letter-spacing: 0.4px !important;
+        line-height: 1.2 !important;
+
+        /* Ensure title stays with line */
+        page-break-after: avoid !important;
+    }
+
+    /* SIGNATURE LINE - Clean Professional */
+    .signature-line {
+        width: 100% !important;
+        height: 36px !important;
+
+        /* Line styling */
+        border-bottom: 2px solid #1e293b !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+
+        /* Spacing */
+        margin-bottom: 10px !important;
+        margin-top: 0 !important;
+
+        /* Prevent orphaning */
+        page-break-after: avoid !important;
+    }
+
+    /* Date/Details Line */
+    .signature-box p.date {
+        margin: 0 !important;
+        padding: 0 !important;
+
+        font-family: 'Prompt', sans-serif !important;
+        font-size: 8pt !important;
+        font-weight: 500 !important;
+        color: #64748b !important;
+        line-height: 1.3 !important;
+        letter-spacing: 0.2px !important;
+    }
+
+    /* Prevent orphaning of date text */
+    .signature-box p.date {
+        page-break-before: avoid !important;
+    }
+
+    /* Additional print overrides to prevent visual overlap in generated PDF */
+    /* Ensure branding header has breathing room from the table */
+    .print-branding-header {
+        margin-bottom: 8px !important;
+        padding-bottom: 4px !important;
+    }
+
+    .print-report-header-only {
+        margin-top: 4px !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* Stack group summary for print and avoid horizontal overflow */
+    /* Use a consolidated table in print instead of card-list */
+    .group-summary-bar {
+        display: none !important;
+    }
+
+    /* Use natural flow instead of absolute positioning */
+    .modal .modal-content {
+        margin-top: 0 !important;
+        position: relative !important;
+    }
+
+    /* ============ Compact Print Overrides ============ */
+    /* Aggressively reduce spacing, padding and font sizes to fit more rows on a single page */
+    html,
+    body,
+    .modal-content.table-modal {
+        font-size: 8.5pt !important;
+    }
+
+    .print-branding-header .branding-logo h1 {
+        font-size: 11pt !important;
+    }
+
+    .branding-meta p {
+        font-size: 7pt !important;
+    }
+
+    .print-report-header-only {
+        font-size: 12pt !important;
+        margin-bottom: 6px !important;
+    }
+
+    /* Make group-summary highly compact (stacked list with minimal padding) */
+    .group-summary-bar {
+        gap: 4px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .group-summary-bar .group-card {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        padding: 4px 6px !important;
+        margin: 0 0 4px 0 !important;
+        min-width: 0 !important;
+        max-width: 100% !important;
+        border: none !important;
+        background: transparent !important;
+    }
+
+    .group-card .group-card-name {
+        font-size: 8pt !important;
+        line-height: 1 !important;
+        -webkit-line-clamp: 1;
+        line-clamp: 1;
+    }
+
+    .group-card .group-card-meta {
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        min-width: 80px !important;
+    }
+
+    .group-card .group-total {
+        font-size: 9pt !important;
+        font-weight: 800 !important;
+    }
+
+    /* Table compaction */
+    .table-responsive {
+        overflow: visible !important;
+    }
+
+    .data-table {
+        font-size: 8.5pt !important;
+        table-layout: fixed !important;
+    }
+
+    .data-table th {
+        padding: 6px 6px !important;
+        font-size: 8.5pt !important;
+    }
+
+    .data-table td {
+        padding: 4px 6px !important;
+        font-size: 8pt !important;
+        line-height: 1 !important;
+    }
+
+    .data-table td,
+    .data-table th {
+        border-width: 1px !important;
+    }
+
+    /* Reduce header branding footprint */
+    .print-branding-header {
+        padding-bottom: 2px !important;
+        margin-bottom: 6px !important;
+    }
+
+    /* Hide non-essential print elements to save space */
+    .print-signature-area,
+    .modal-footer,
+    .pdf-btn-luxury {
+        display: none !important;
+    }
+
+    /* Slight scale down as a last resort for very long lists (helps fit one extra row or two) */
+    .modal-content.table-modal {
+        transform: scale(0.96) !important;
+        transform-origin: top left !important;
+    }
+
+    /* Make numeric columns tight and aligned */
+    .data-table td.amount,
+    .data-table td:last-child,
+    .total-amount-val {
+        font-size: 9pt !important;
+        font-weight: 800 !important;
+        padding-top: 4px !important;
+        padding-bottom: 4px !important;
+    }
+
+    /* Reduce margins between rows for maximum density */
+    .data-table tbody tr td {
+        padding-top: 3px !important;
+        padding-bottom: 3px !important;
+    }
+
+    /* Final protection: keep header + content contiguous where possible */
+    .print-report-container {
+        page-break-before: auto !important;
+        page-break-inside: avoid !important;
+    }
+
+}
+
+@media print {
+
+    /* 犧壟ｸｱ犧�ｸ�ｸｱ犧壟ｸｪ犧ｵ犧樅ｸｷ犹霞ｸ吭ｸｫ犧･犧ｱ犧�ｹ�ｸｫ犹霞ｸ｡犧ｲ犹犧歩ｹ�ｸ｡ 100% */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+
+    @page {
+        size: A4;
+        margin: 5mm;
+    }
+
+    /* 犧謂ｸｱ犧扉ｸ伶ｸ｣犧�ｸ歩ｸｲ犧｣犧ｲ犧�ｹ�ｸｫ犧｡犹謂ｹ�ｸｫ犹霞ｸ扉ｸｹ犧樅ｸ｣犧ｵ犹犧｡犧ｵ犧｢犧｡ */
+    .print-summary-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed !important;
+        font-family: 'Prompt', sans-serif !important;
+        border: 1px solid #cbd5e1 !important;
+    }
+
+    .print-summary-table td:first-child {
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        white-space: normal !important;
+        overflow: hidden !important;
+    }
+
+    /* 犧ｫ犧ｱ犧ｧ犧歩ｸｲ犧｣犧ｲ犧�: 犧ｪ犧ｵ犧｡犹謂ｸｧ犧�ｸ吭ｹ霞ｸｳ犹犧�ｸｴ犧吭ｹ犧もｹ霞ｸ｡ 犧伶ｸ｣犧�ｸ樅ｸ･犧ｱ犧� */
+    .print-summary-table th {
+        background-color: #4f46e5 !important;
+        color: #ffffff !important;
+        padding: 12px 15px;
+        font-size: 14px;
+        border: 1px solid #4f46e5 !important;
+    }
+
+    /* 犹≒ｸ籾ｸｧ犧もｹ霞ｸｭ犧｡犧ｹ犧･: 犧ｪ犧ｰ犧ｭ犧ｲ犧扉ｸ歩ｸｲ 犧ｭ/* 犧壟ｸｱ犧�ｸ�ｸｱ犧壟ｸ≒ｸ｣犧ｭ犧壟ｸ歩ｸｲ犧｣犧ｲ犧�ｹ�ｸｫ犹霞ｸ｡犧ｵ犹≒ｸ籾ｸ壟ｹ犧･犧ｷ犹謂ｸｭ犧吭ｸ壟ｸ吭ｸｫ犧吭ｹ霞ｸｲ犧謂ｸｭ (Screen only) */
+    @media screen {
+        .modal-content.table-modal {
+            max-height: 85vh !important;
+            display: flex !important;
+            flex-direction: column !important;
+        }
+
+        .table-responsive {
+            max-height: 60vh !important;
+            overflow-y: auto !important;
+            overflow-x: auto !important;
+        }
+
+        /* 犧金ｹ謂ｸｭ犧吭ｸｫ犧ｱ犧ｧ犧もｹ霞ｸｭ犧壟ｸ｣犧ｴ犧ｩ犧ｱ犧伶ｸ歩ｸｭ犧吭ｸｭ犧｢犧ｹ犹謂ｸ壟ｸ吭ｸｫ犧吭ｹ霞ｸｲ犧謂ｸｭ */
+        .print-report-container::before {
+            display: none !important;
+        }
+    }
+
+    /* =========================================
+   犧�ｸｭ犧｡犹もｸ壟ｹ犧金ｹ�ｸ�: 犧巵ｸ｣犧ｴ犹霞ｸ� PDF 犧ｪ犧ｧ犧｢, 犧｡犧ｵ犧ｫ犧ｱ犧ｧ犧もｹ霞ｸｭ, 犧｡犧ｵ犧･犧ｲ犧｢犹犧金ｹ�ｸ�!
+   ========================================= */
+    @media print {
+
+        /* 1. 犧金ｹ謂ｸｭ犧吭ｸもｸｭ犧�ｸ≒ｸｧ犧吭ｹ�ｸ謂ｸ壟ｸ吭ｹ犧ｧ犹�ｸ� */
+        body:has(.modal:not(.hidden)) .print-global-header-section,
+        body:has(.modal:not(.hidden)) .dashboard-container,
+        .modal-footer,
+        .close-btn,
+        .details-controls,
+        #detailsModalTitle,
+        #dateDetailModalTitle,
+        .modal-content>h2 {
+            display: none !important;
+        }
+
+        /* 2. 犧巵ｸ･犧扉ｸ･犹�ｸｭ犧≒ｸ≒ｸ｣犧ｭ犧� 犹�ｸｫ犹霞ｸｭ犧ｭ犧≒ｸ｡犧ｲ犹犧歩ｹ�ｸ｡犧ｫ犧吭ｹ霞ｸｲ A4 */
+        .modal:not(.hidden) {
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            background: transparent !important;
+        }
+
+        .modal-content,
+        .table-responsive {
+            max-height: none !important;
+            overflow: visible !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+        }
+
+        /* 3. 犹犧ｪ犧≒ｸｫ犧ｱ犧ｧ犧もｹ霞ｸｭ犧壟ｸ｣犧ｴ犧ｩ犧ｱ犧伶ｹ≒ｸ巵ｸｰ犧歩ｸｴ犧扉ｹ犧ｫ犧吭ｸｷ犧ｭ犧歩ｸｲ犧｣犧ｲ犧� */
+        .print-report-container::before {
+            content: "笶� THAI DRILL DATA ANALYTICS Expense Dashboard 笶�";
+            display: block !important;
+            text-align: center !important;
+            font-family: 'Prompt', sans-serif !important;
+            font-size: 24px !important;
+            font-weight: 800 !important;
+            color: #1e293b !important;
+            margin-top: 10px !important;
+            margin-bottom: 25px !important;
+            padding-bottom: 20px !important;
+            border-bottom: 3.5px solid #4f46e5 !important;
+        }
+
+        /* 4. 犹犧巵ｸｴ犧扉ｸ癌ｹ謂ｸｭ犧�ｹ犧金ｹ�ｸ吭ｸ癌ｸｷ犹謂ｸｭ犧扉ｹ霞ｸｲ犧吭ｸ･犹謂ｸｲ犧� (犧ｫ犹霞ｸｲ犧｡犧もｸｲ犧扉ｸ�ｸ｣犧ｶ犹謂ｸ�ｸｫ犧吭ｹ霞ｸｲ) */
+        .print-signature-area {
+            display: block !important;
+            margin-top: 60px !important;
+            page-break-before: auto !important;
+            page-break-inside: avoid !important;
+        }
+
+        .print-signature-grid {
+            display: flex !important;
+            justify-content: space-around !important;
+            text-align: center !important;
+            gap: 20px !important;
+            page-break-inside: avoid !important;
+        }
+
+        .signature-box {
+            flex: 1;
+            color: #1e293b !important;
+            page-break-inside: avoid !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+
+        .signature-box p.title {
+            font-weight: 800 !important;
+            margin-bottom: 40px !important;
+        }
+
+        .signature-line {
+            border-bottom: 1.5px solid #1e293b !important;
+            margin-bottom: 10px !important;
+            width: 180px !important;
+        }
+
+        .signature-box p.date {
+            font-size: 13px !important;
+            white-space: nowrap !important;
+        }
+    }
+
+    @page {
+        size: A4;
+        margin: 5mm;
+    }
+
+}
+
+/* 犧金ｹ謂ｸｭ犧吭ｸｫ犧ｱ犧ｧ犹犧扉ｸ扉ｸｴ犧｡犧もｸｭ犧� Modal 犹犧樅ｸｷ犹謂ｸｭ犹�ｸｫ犹霞ｸｫ犧ｱ犧ｧ犧もｹ霞ｸｭ犧壟ｸ｣犧ｴ犧ｩ犧ｱ犧伶ｹ犧扉ｹ謂ｸ吭ｸ伶ｸｵ犹謂ｸｪ犧ｸ犧� */
+#detailsModalTitle,
+#dateDetailModalTitle,
+.modal-content>h2 {
+    display: none !important;
+}
+
+/* 犧ｫ犧ｱ犧ｧ犧もｹ霞ｸｭ犧壟ｸ｣犧ｴ犧ｩ犧ｱ犧�: 犹≒ｸｪ犧扉ｸ�ｸ伶ｸｱ犹霞ｸ�ｸ壟ｸ吭ｸｫ犧吭ｹ霞ｸｲ犧謂ｸｭ犹≒ｸ･犧ｰ犧歩ｸｭ犧吭ｸ巵ｸ｣犧ｴ犹霞ｸ� */
+.print-report-container::before {
+    content: "笶� THAI DRILL DATA ANALYTICS Expense Dashboard 笶�";
+    display: block !important;
+    text-align: center !important;
+    font-family: 'Prompt', sans-serif !important;
+    font-size: 20px !important;
+    font-weight: 800 !important;
+    color: rgba(255, 255, 255, 0.45) !important;
+    /* 犧ｪ犧ｵ犧謂ｸｲ犧�ｹ� 犹≒ｸ壟ｸ壟ｸ｡犧ｴ犧吭ｸｴ犧｡犧ｭ犧･犧歩ｸｲ犧｡犧｣犧ｹ犧� */
+    letter-spacing: 1px;
+    margin: 15px 0 25px 0 !important;
+    padding-bottom: 20px !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 犧巵ｸ｣犧ｱ犧壟ｹ≒ｸ歩ｹ謂ｸ�ｸｪ犹謂ｸｧ犧吭ｸ伶ｹ霞ｸｲ犧｢犧歩ｸｲ犧｣犧ｲ犧� (Total Row) 犹�ｸｫ犹霞ｹ犧扉ｹ謂ｸ吭ｸ癌ｸｱ犧� */
+.data-table tfoot .total-row-summary {
+    background: rgba(99, 102, 241, 0.08) !important;
+    border-top: 1px solid rgba(99, 102, 241, 0.2) !important;
+}
+
+.data-table tfoot .total-amount-val {
+    color: var(--accent-primary) !important;
+    font-size: 15px !important;
+}
+
+@page {
+    size: A4;
+    margin: 5mm;
+}
+
+/* =========================================
+   犹犧金ｹ�ｸ歩ｸ謂ｸ�: 犧巵ｸ｣犧ｴ犹霞ｸ� PDF 犧｢犧ｲ犧ｧ犧伶ｸｰ犧･犧ｸ犧謂ｸｭ + 犧｡犧ｵ犧ｫ犧ｱ犧ｧ犧もｹ霞ｸｭ + 犧｡犧ｵ犧伶ｸｵ犹謂ｹ犧金ｹ�ｸ�!
+   ========================================= */
+@media print {
+
+    /* 1. 犧金ｹ謂ｸｭ犧吭ｸもｸｭ犧�ｸ≒ｸｧ犧吭ｹ�ｸ謂ｸ壟ｸ吭ｹ犧ｧ犹�ｸ� */
+    body:has(.modal:not(.hidden)) .print-global-header-section,
+    body:has(.modal:not(.hidden)) .dashboard-container {
+        display: none !important;
+    }
+
+    /* 2. 犧巵ｸ･犧扉ｸ･犹�ｸｭ犧�ｸ≒ｸ｣犧ｭ犧� 犹�ｸｫ犹霞ｸｭ犧ｭ犧≒ｸ｡犧ｲ犹犧歩ｹ�ｸ｡犧ｫ犧吭ｹ霞ｸｲ A4 */
+    .modal:not(.hidden) {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        background: transparent !important;
+    }
+
+    .modal-content,
+    .table-responsive {
+        max-height: none !important;
+        overflow: visible !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+    }
+
+    /* 3. 犧伶ｹ謂ｸｲ犹�ｸ｡犹霞ｸ歩ｸｲ犧｢犹犧ｪ犧≒ｸｫ犧ｱ犧ｧ犧もｹ霞ｸｭ! (犹犧ｭ犧ｲ h2 �    /* 5. 犧金ｹ謂ｸｭ犧吭ｸ巵ｸｸ犹謂ｸ｡犧≒ｸ扉ｸ｢犧≒ｹ犧･犧ｴ犧≒ｸ歩ｸｭ犧吭ｸ巵ｸ｣犧ｴ犹霞ｸ� */
+    .modal-footer,
+    .close-btn,
+    .details-controls {
+        display: none !important;
+    }
+}
+
+/* =========================================
+   PREMIUM WEB ANIMATIONS
+   ========================================= */
+.card {
+    animation: entrance 0.7s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+/* Staggered entry delays */
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.card:nth-child(3) { animation-delay: 0.3s; }
+.card:nth-child(4) { animation-delay: 0.4s; }
+.card:nth-child(5) { animation-delay: 0.5s; }
+
+.card-total-circle {
+    animation-delay: 0.15s !important;
+}
+
+.dashboard-updating .card {
+    animation: updateFlash 0.5s ease-out;
+}
+
+.details-modal-content {
+    animation: entrance 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.loading-shimmer {
+    background: linear-gradient(90deg, 
+        rgba(255,255,255,0.01) 25%, 
+        rgba(255,255,255,0.05) 50%, 
+        rgba(255,255,255,0.01) 75%);
+    background-size: 800px 100%;
+    animation: shimmerEffect 2s infinite linear;
+}

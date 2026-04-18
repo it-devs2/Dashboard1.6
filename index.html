@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <!-- Boxicons for icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- PDF Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+
+<body>
+    <!-- Global Print Header and Summary Table -->
+    <div class="print-global-header-section">
+        <div class="print-premium-bar"></div>
+        <div class="print-branding-header" id="globalPrintBranding">
+            <div class="branding-main">
+                <div class="branding-logo">
+                    <i class='bx bxl-codepen'></i>
+                    <h1>THAI DRILL DATA ANALYTICS <span class="report-badge">Expense Dashboard</span></h1>
+                </div>
+            </div>
+            <div class="branding-meta">
+                <div class="meta-item">
+                    <span class="label">เลขที่เอกสาร:</span>
+                    <span id="printDocIdGlobal" class="value">RT-XXXXXX</span>
+                </div>
+                <div class="meta-item">
+                    <span class="label">ออกรายงานเมื่อ:</span>
+                    <span id="printIssueDateGlobal" class="value">DD/MM/YYYY</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="printReportHeaderGlobal" class="print-report-header-only">ประเภทรายงาน: -</div>
+
+        <div id="globalPrintGroupTable" class="print-summary-table-container">
+            <table class="print-summary-table">
+                <thead>
+                    <tr>
+                        <th style="text-align:left;">เจ้าหนี้</th>
+                        <th style="text-align:center; width:80px;">จำนวน</th>
+                        <th style="text-align:right; width:150px;">จำนวนเงิน</th>
+                    </tr>
+                </thead>
+                <tbody id="globalPrintGroupTableBody"></tbody>
+                <tfoot id="globalPrintGroupTableFooter">
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar or Header -->
+        <header class="top-nav">
+            <div class="logo">
+                <i class='bx bx-pie-chart-alt-2'></i>
+                <h1>Expense Analytics</h1>
+            </div>
+
+            <div class="filter-section">
+                <!-- Search first (multi-select chips + input) -->
+                <div class="filter-group header-search">
+                    <label for="creditorFilter">ชื่อเจ้าหนี้</label>
+                    <div class="search-box" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="search-icon"><i class='bx bx-search'></i></span>
+                        <div id="selectedChips" class="selected-chips" hidden></div>
+                        <input type="text" id="creditorFilter" class="search-input" autocomplete="off"
+                            placeholder="ค้นหาชื่อเจ้าหนี้...">
+                        <button type="button" class="search-clear" aria-label="ล้างการค้นหา" hidden>✕</button>
+                    </div>
+                    <div id="creditorDropdown" class="creditor-dropdown" hidden>
+                        <div class="creditor-dropdown-header">
+                            <strong>เลือกเจ้าหนี้</strong>
+                            <button type="button" class="clear-selection-btn">ล้าง</button>
+                        </div>
+                        <div id="creditorListPanel" class="creditor-list"></div>
+                    </div>
+                </div>
+                <!-- Status comes after search -->
+                <div class="filter-group">
+                    <label for="paymentStatusFilter">สถานะ</label>
+                    <select id="paymentStatusFilter">
+                        <option value="all">ทั้งหมด</option>
+                        <option value="รอโอน">รอโอน</option>
+                        <option value="จ่ายแล้ว">จ่ายแล้ว</option>
+                        <option value="ตัดลูกหนี้">ตัดลูกหนี้</option>
+                        <option value="ยกเลิก">ยกเลิก</option>
+                        <option value="ตัดบัตรเครดิต">ตัดบัตรเครดิต</option>
+                        <option value="หักบัญชีแล้ว">หักบัญชีแล้ว</option>
+                        <option value="ตัดเช็คผ่าน">ตัดเช็คผ่าน</option>
+                        <option value="คืนกรรมการ">คืนกรรมการ</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="categoryFilter">Category</label>
+                    <select id="categoryFilter">
+                        <option value="all">ทั้งหมด</option>
+                        <option value="เจ้าหนี้รายเดือน">เจ้าหนี้รายเดือน</option>
+                        <option value="รายสัปดาห์">รายสัปดาห์</option>
+                        <option value="ลิสซิ่ง">ลิสซิ่ง</option>
+                    </select>
+                </div>
+                <!-- Overdue Range Filter -->
+                <div class="filter-group header-overdue">
+                    <label for="overdueRangeFilter">ระยะเวลาเกินกำหนด</label>
+                    <div class="search-box overdue-box" role="combobox" aria-haspopup="listbox" aria-expanded="false">
+                        <span class="search-icon"><i class='bx bx-calendar-exclamation'></i></span>
+                        <div id="selectedOverdueChips" class="selected-chips" hidden></div>
+                        <input type="text" id="overdueRangeFilter" class="search-input" readonly
+                            placeholder="ทุกระยะเวลา...">
+                        <button type="button" class="search-clear overdue-clear" aria-label="ล้างการเลือก"
+                            hidden>✕</button>
+                    </div>
+                    <div id="overdueDropdown" class="creditor-dropdown" hidden>
+                        <div class="creditor-dropdown-header">
+                            <strong>เลือกช่วงวันเกินกำหนด</strong>
+                            <button type="button" class="clear-overdue-btn">ล้าง</button>
+                        </div>
+                        <div id="overdueListPanel" class="creditor-list">
+                            <!-- JS populated ranges -->
+                        </div>
+                    </div>
+                </div>
+                <div class="filter-group">
+                    <label for="dayFilter">วัน</label>
+                    <select id="dayFilter">
+                        <option value="all">ทั้งหมด</option>
+                        <!-- JS populated 1-31 -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="monthFilter">เดือน</label>
+                    <select id="monthFilter">
+                        <option value="all">ทั้งหมด</option>
+                        <option value="ม.ค.">มกราคม (ม.ค.)</option>
+                        <option value="ก.พ.">กุมภาพันธ์ (ก.พ.)</option>
+                        <option value="มี.ค.">มีนาคม (มี.ค.)</option>
+                        <option value="เม.ย.">เมษายน (เม.ย.)</option>
+                        <option value="พ.ค.">พฤษภาคม (พ.ค.)</option>
+                        <option value="มิ.ย.">มิถุนายน (มิ.ย.)</option>
+                        <option value="ก.ค.">กรกฎาคม (ก.ค.)</option>
+                        <option value="ส.ค.">สิงหาคม (ส.ค.)</option>
+                        <option value="ก.ย.">กันยายน (ก.ย.)</option>
+                        <option value="ต.ค.">ตุลาคม (ต.ค.)</option>
+                        <option value="พ.ย.">พฤศจิกายน (พ.ย.)</option>
+                        <option value="ธ.ค.">ธันวาคม (ธ.ค.)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="yearFilter">ปี</label>
+                    <select id="yearFilter">
+                        <option value="all">ทั้งหมด</option>
+                        <option value="2024">2024</option>
+                        <option value="2025">2025</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                    </select>
+                </div>
+            </div>
+            <div class="refresh-container">
+                <button id="refreshBtn" class="premium-btn"><i class='bx bx-refresh'></i> โหลดใหม่</button>
+            </div>
+        </header>
+
+
+
+        <main class="main-content">
+            <div id="loading" class="loading-overlay">
+                <div class="spinner"></div>
+                <p>กำลังโหลดข้อมูลจาก Google Sheets...</p>
+            </div>
+
+            <!-- Summary Cards - Center Layout -->
+            <section class="summary-layout">
+                <!-- Left Column -->
+                <div class="cards-column">
+                    <div class="card card-ontime">
+                        <div class="card-icon"><i class='bx bx-check-circle'></i></div>
+                        <div class="card-info">
+                            <h3>จ่ายตรงดิว</h3>
+                            <h2 id="ontimeAmount">0.00</h2>
+                            <p id="ontimePercent" class="percent-text">คิดเป็น 0%</p>
+                            <button class="details-btn" data-status="ontime">ดูข้อมูลเพิ่มเติม <i
+                                    class='bx bx-right-arrow-alt'></i></button>
+                        </div>
+                    </div>
+                    <div class="card card-early">
+                        <div class="card-icon"><i class='bx bx-calendar-star'></i></div>
+                        <div class="card-info">
+                            <h3>จ่ายก่อนกำหนด</h3>
+                            <h2 id="earlyAmount">0.00</h2>
+                            <p id="earlyPercent" class="percent-text">คิดเป็น 0%</p>
+                            <button class="details-btn" data-status="early">ดูข้อมูลเพิ่มเติม <i
+                                    class='bx bx-right-arrow-alt'></i></button>
+                        </div>
+                    </div>
+                    <div class="card card-overdue">
+                        <div class="card-icon"><i class='bx bx-error'></i></div>
+                        <div class="card-info">
+                            <h3>จ่ายเกินกำหนด</h3>
+                            <h2 id="overdueAmount">0.00</h2>
+                            <p id="overduePercent" class="percent-text">คิดเป็น 0%</p>
+                            <button class="details-btn" data-status="overdue">ดูข้อมูลเพิ่มเติม <i
+                                    class='bx bx-right-arrow-alt'></i></button>
+                        </div>
+                    </div>
+                </div> <!-- Closing left cards-column -->
+                <!-- Center Circle - Total -->
+                <div class="card-center-wrapper">
+                    <div class="card card-total card-total-circle">
+                        <div class="card-total-inner">
+                            <div class="card-icon"><i class='bx bx-wallet'></i></div>
+                            <h3>รวมรายจ่ายทั้งหมด</h3>
+                            <h2 id="totalAmount">0.00</h2>
+                            <p id="totalPercent" class="percent-text">คิดเป็น 100%</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right Column -->
+                <div class="cards-column">
+                    <div class="card card-nodate">
+                        <div class="card-icon"><i class='bx bx-calendar-x'></i></div>
+                        <div class="card-info">
+                            <h3>ยังไม่กำหนดวันจ่าย</h3>
+                            <h2 id="nodateAmount">0.00</h2>
+                            <p id="nodatePercent" class="percent-text">คิดเป็น 0%</p>
+                            <button class="details-btn" data-status="nodate">ดูข้อมูลเพิ่มเติม <i
+                                    class='bx bx-right-arrow-alt'></i></button>
+                        </div>
+                    </div>
+                    <div class="card card-notdue">
+                        <div class="card-icon"><i class='bx bx-time'></i></div>
+                        <div class="card-info">
+                            <h3>ยังไม่ถึงกำหนด</h3>
+                            <h2 id="notdueAmount">0.00</h2>
+                            <p id="notduePercent" class="percent-text">คิดเป็น 0%</p>
+                            <button class="details-btn" data-status="notdue">ดูข้อมูลเพิ่มเติม <i
+                                    class='bx bx-right-arrow-alt'></i></button>
+                        </div>
+                    </div>
+                    <div class="card card-pending">
+                        <div class="card-icon"><i class='bx bx-hourglass'></i></div>
+                        <div class="card-info">
+                            <h3>เกินกำหนด (รอพิจารณา)</h3>
+                            <h2 id="pendingAmount">0.00</h2>
+                            <p id="pendingPercent" class="percent-text">คิดเป็น 0%</p>
+                            <button class="details-btn" data-status="pending">ดูข้อมูลเพิ่มเติม <i
+                                    class='bx bx-right-arrow-alt'></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Charts Section -->
+            <section class="charts-section">
+                <!-- Status Distribution Chart (Donut) -->
+                <div class="chart-container chart-status">
+                    <h3>สัดส่วนสถานะการจ่าย</h3>
+                    <div class="canvas-wrapper">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Category/Monthly Bar Chart -->
+                <div class="chart-container chart-trend">
+                    <h3>รายการเจ้าหนี้รายใหญ่ (Top 10)</h3>
+                    <div class="canvas-wrapper">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Date Summary Section -->
+            <section class="date-summary-section">
+                <div class="date-summary-header">
+                    <div class="date-summary-title">
+                        <i class='bx bx-calendar-check'></i>
+                        <h3>รวมจำนวนเงินตามวันที่ทำเอกสารจ่าย</h3>
+                    </div>
+                    <div class="date-summary-filters">
+                    <div class="date-summary-filters">
+                        <!-- Upgraded Multi-Select Creditor Search for Date Summary -->
+                        <div class="date-filter-group date-search multi-select-creditor">
+                            <label for="payDocCreditorFilter">ชื่อเจ้าหนี้</label>
+                            <div class="search-box" role="combobox" aria-haspopup="listbox" aria-expanded="false" style="min-width: 240px; max-width: 500px;">
+                                <span class="search-icon"><i class='bx bx-search'></i></span>
+                                <div id="selectedPayDocChips" class="selected-chips" hidden></div>
+                                <input type="text" id="payDocCreditorFilter" class="search-input" autocomplete="off"
+                                    placeholder="เลือกชื่อเจ้าหนี้...">
+                                <button type="button" id="payDocSearchClear" class="search-clear" aria-label="ล้างการค้นหา" hidden>✕</button>
+                            </div>
+                            <div id="payDocCreditorDropdown" class="creditor-dropdown" hidden style="width: 100%; max-width: 500px; left: 0;">
+                                <div class="creditor-dropdown-header">
+                                    <strong>เลือกเจ้าหนี้</strong>
+                                    <button type="button" id="payDocClearSelection" class="clear-selection-btn">ล้าง</button>
+                                </div>
+                                <div id="payDocCreditorListPanel" class="creditor-list"></div>
+                            </div>
+                        </div>
+
+                        <!-- New Urgency Filter (Column N) -->
+                        <div class="date-filter-group">
+                            <label for="payDocUrgencyFilter">ความเร่งด่วน</label>
+                            <select id="payDocUrgencyFilter">
+                                <option value="all">ทั้งหมด</option>
+                            </select>
+                        </div>
+
+                        <!-- New Category Filter for Date Summary -->
+                        <div class="date-filter-group">
+                            <label for="payDocCategoryFilter">Category</label>
+                            <select id="payDocCategoryFilter">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="เจ้าหนี้รายเดือน">เจ้าหนี้รายเดือน</option>
+                                <option value="รายสัปดาห์">รายสัปดาห์</option>
+                                <option value="ลิสซิ่ง">ลิสซิ่ง</option>
+                            </select>
+                        </div>
+
+                        <div class="date-filter-group">
+                            <label for="payDocStatusFilter">สถานะ</label>
+                            <select id="payDocStatusFilter">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="รอโอน" selected>รอโอน</option>
+                                <option value="จ่ายแล้ว">จ่ายแล้ว</option>
+                                <option value="ตัดลูกหนี้">ตัดลูกหนี้</option>
+                                <option value="ยกเลิก">ยกเลิก</option>
+                                <option value="ตัดบัตรเครดิต">ตัดบัตรเครดิต</option>
+                                <option value="หักบัญชีแล้ว">หักบัญชีแล้ว</option>
+                                <option value="ตัดเช็คผ่าน">ตัดเช็คผ่าน</option>
+                                <option value="คืนกรรมการ">คืนกรรมการ</option>
+                            </select>
+                        </div>
+                        <div class="date-filter-group">
+                            <label for="payDocMonthFilter">เดือน</label>
+                            <select id="payDocMonthFilter">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="ม.ค.">มกราคม (ม.ค.)</option>
+                                <option value="ก.พ.">กุมภาพันธ์ (ก.พ.)</option>
+                                <option value="มี.ค.">มีนาคม (มี.ค.)</option>
+                                <option value="เม.ย.">เมษายน (เม.ย.)</option>
+                                <option value="พ.ค.">พฤษภาคม (พ.ค.)</option>
+                                <option value="มิ.ย.">มิถุนายน (มิ.ย.)</option>
+                                <option value="ก.ค.">กรกฎาคม (ก.ค.)</option>
+                                <option value="ส.ค.">สิงหาคม (ส.ค.)</option>
+                                <option value="ก.ย.">กันยายน (ก.ย.)</option>
+                                <option value="ต.ค.">ตุลาคม (ต.ค.)</option>
+                                <option value="พ.ย.">พฤศจิกายน (พ.ย.)</option>
+                                <option value="ธ.ค.">ธันวาคม (ธ.ค.)</option>
+                            </select>
+                        </div>
+                        <div class="date-filter-group">
+                            <label for="payDocYearFilter">ปี</label>
+                            <select id="payDocYearFilter">
+                                <option value="all">ทั้งหมด</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="date-summary-grid" id="dateSummaryGrid">
+                    <!-- JS populated date cards -->
+                    <div class="date-summary-empty">
+                        <i class='bx bx-data'></i>
+                        <p>กำลังโหลดข้อมูล...</p>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+    </div>
+
+    <!-- Configuration info (hidden by default) -->
+    <div id="setupModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <h2>วิธีการเชื่อมต่อ Google Sheets</h2>
+            <ol>
+                <li>เปิดไฟล์ Google Sheets ของคุณ</li>
+                <li>ไปที่ <b>ส่วนขยาย (Extensions) &gt; Apps Script</b></li>
+                <li>คลิกไอคอนเครื่องหมาย <b>+</b> (เพิ่มไฟล์) ตรงเมนูซ้ายมือ เลือก <b>สคริปต์ (Script)</b>
+                    แล้วตั้งชื่อไฟล์ว่า <code>DashboardAPI</code></li>
+                <li>นำเนื้อหาจากไฟล์ <b style="color:var(--accent-primary)">Code.gs</b> ที่ผมเขียนให้
+                    <b>ไปวางในไฟล์ใหม่ที่เพิ่งสร้างนี้ได้เลยครับ (ห้ามลบไฟล์เก่าเด็ดขาด)</b>
+                </li>
+                <li>แก้ไขชื่อ Sheet ในโค้ด <code>const sheetName = 'Sheet1';</code> ให้ตรงกับชื่อ Sheet ของคุณ (เช่น
+                    <code>'เจ้าหนี้อื่นๆ-รถเจาะไทย'</code>)
+                </li>
+                <li>คลิก <b>การทำให้ใช้งานได้ (Deploy) &gt; การทำให้ใช้งานได้รายการใหม่ (New deployment)</b></li>
+                <li>คลิกรูปเฟือง และเลือกประเภท <b>"เว็บแอป" (Web App)</b></li>
+                <li>การเข้าถึงให้สิทธิ์: เลือก <b>"ทุกคน" (Anyone)</b> เท่านั้น</li>
+                <li>คลิก การทำให้ใช้งานได้ (Deploy) อนุมัติสิทธิ์ และคัดลอก "URL ของเว็บแอป"</li>
+                <li>นำ URL มาวางในไฟล์ <code>script.js</code> ที่บรรทัดแรก
+                    <code>const GOOGLE_APP_SCRIPT_URL = '...'</code>
+                </li>
+            </ol>
+            <p style="color:var(--text-muted); font-size: 13px; margin-top: 15px;">*
+                ตอนนี้ผมใช้หน้าต่างนี้แสดงให้คุณเห็นก่อน และใน Dashboard จะเป็น "ข้อมูลจำลอง" ให้ดูชั่วคราวครับ</p>
+            <button id="closeModalBtn" class="premium-btn"
+                style="margin-top: 20px; width: 100%; justify-content: center;">เข้าใจแล้ว ปิดหน้าต่างนี้</button>
+        </div>
+    </div>
+
+    <!-- Date Detail Modal (outside dashboard-container for printing) -->
+    <div id="dateDetailModal" class="modal hidden">
+        <div class="modal-content table-modal">
+            <span class="close-date-detail-btn close-btn">&times;</span>
+            <h2 id="dateDetailModalTitle"
+                style="margin-bottom: 24px; color: var(--text-main); border-left: 4px solid var(--accent-primary); padding-left: 15px;">
+                รายละเอียดวันที่</h2>
+            
+            <div class="details-controls">
+                <div class="view-toggle">
+                    <button id="btnDateViewItems" class="seg-btn is-active" aria-pressed="true">รายการ</button>
+                    <button id="btnDateViewGrouped" class="seg-btn" aria-pressed="false">สรุปเจ้าหนี้</button>
+                </div>
+            </div>
+
+            <div class="print-report-container">
+                <div class="print-premium-bar"></div>
+                <div class="print-branding-header">
+                    <div class="branding-main">
+                        <div class="branding-logo">
+                            <i class='bx bxl-codepen'></i>
+                            <h1>THAI DRILL DATA ANALYTICS <span class="report-badge">Expense Dashboard</span></h1>
+                        </div>
+                    </div>
+                    <div class="branding-meta">
+                        <div class="meta-item">
+                            <span class="label">เลขที่เอกสาร:</span>
+                            <span id="printDocIdDate" class="value">RT-XXXXXX</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="label">ออกรายงานเมื่อ:</span>
+                            <span id="printIssueDateDate" class="value">DD/MM/YYYY</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="print-report-header-group">
+                    <h2 id="printDateReportTitle" class="print-report-title-label">สรุปรายการเบิกจ่ายประจำวัน</h2>
+                    <div id="printDateReportSubtitle" class="print-report-subtitle"></div>
+                </div>
+                
+                <!-- Grouped summary (per-creditor) for Date -->
+                <div id="groupSummaryBarDate" class="group-summary-bar" hidden></div>
+
+                <!-- Main Data Table -->
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>เลขที่เอกสาร</th>
+                                <th>เจ้าหนี้</th>
+                                <th>รายละเอียด</th>
+                                <th>หมวดหมู่</th>
+                                <th>วันที่ครบกำหนดชำระ</th>
+                                <th style="text-align: center; white-space: nowrap;">ระยะเวลา</th>
+                                <th style="text-align: right; white-space: nowrap;">จำนวนเงิน</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dateDetailTableBody">
+                            <!-- JS generated rows -->
+                        </tbody>
+                        <tfoot id="dateDetailTableFooter">
+                            <!-- JS generated summary row -->
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Print Footer Section: Always Stays Together -->
+                <div class="print-footer-block">
+                    <!-- Print Signature Area (Professional Grid) -->
+                    <div class="print-signature-area">
+                        <div class="print-signature-grid">
+                            <div class="signature-box">
+                                <p class="title">ผู้จัดทำ</p>
+                                <div class="signature-line"></div>
+                                <p class="date">ลงชื่อ วันที่ ___ / ___ / _____</p>
+                            </div>
+                            <div class="signature-box">
+                                <p class="title">ผู้ตรวจสอบ</p>
+                                <div class="signature-line"></div>
+                                <p class="date">ลงชื่อ วันที่ ___ / ___ / _____</p>
+                            </div>
+                            <div class="signature-box">
+                                <p class="title">ผู้อนุมัติ</p>
+                                <div class="signature-line"></div>
+                                <p class="date">ลงชื่อ วันที่ ___ / ___ / _____</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button id="exportDatePdfBtn" class="pdf-btn-luxury">
+                    <i class='bx bxs-file-pdf'></i> บันทึกเอกสารจ่ายเป็น PDF
+                </button>
+                <button id="closeDateDetailModalBtn" class="premium-btn"
+                    style="width: auto; min-width: 160px; justify-content: center;">ย่อหน้าต่างกลับ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details/Data Table Modal -->
+    <div id="detailsModal" class="modal hidden">
+        <div class="modal-content table-modal">
+            <span class="close-details-btn close-btn">&times;</span>
+            <h2 id="detailsModalTitle"
+                style="margin-bottom: 24px; color: var(--text-main); border-left: 4px solid var(--accent-primary); padding-left: 15px;">
+                รายละเอียดรายการ</h2>
+            <div class="details-controls">
+                <div class="view-toggle">
+                    <button id="btnViewItems" class="seg-btn is-active" aria-pressed="true">รายการ</button>
+                    <button id="btnViewGrouped" class="seg-btn" aria-pressed="false">สรุปเจ้าหนี้</button>
+                </div>
+            </div>
+
+            <!-- Combined Print Report Container: Table + Footer + Signatures -->
+            <div class="print-report-container">
+                <div class="print-premium-bar"></div>
+                <div class="print-branding-header">
+                    <div class="branding-main">
+                        <div class="branding-logo">
+                            <i class='bx bxl-codepen'></i>
+                            <h1>THAI DRILL DATA ANALYTICS <span class="report-badge">Expense Dashboard</span></h1>
+                        </div>
+                    </div>
+                    <div class="branding-meta">
+                        <div class="meta-item">
+                            <span class="label">เลขที่เอกสาร:</span>
+                            <span id="printDocIdDetails" class="value">RT-XXXXXX</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="label">ออกรายงานเมื่อ:</span>
+                            <span id="printIssueDateDetails" class="value">DD/MM/YYYY</span>
+                        </div>
+                    </div>
+                </div>
+                <div id="printReportHeaderLocal" class="print-report-title-label">ประเภทรายงาน: -</div>
+
+                <!-- Grouped summary (per-creditor) -->
+                <div id="groupSummaryBar" class="group-summary-bar" hidden></div>
+
+                <!-- Main Data Table -->
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>เลขที่เอกสาร</th>
+                                <th>เจ้าหนี้</th>
+                                <th>รายละเอียด</th>
+                                <th>หมวดหมู่</th>
+                                <th class="th-split">วันที่ครบกำหนดชำระ</th>
+                                <th style="text-align: center; white-space: nowrap;">ระยะเวลา</th>
+                                <th style="text-align: right; white-space: nowrap;">จำนวนเงิน</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailsTableBody">
+                            <!-- JS generated rows -->
+                        </tbody>
+                        <tfoot id="detailsTableFooter">
+                            <!-- JS generated summary row -->
+                        </tfoot>
+                    </table>
+                </div>
+
+                <!-- Print Footer Section: Always Stays Together -->
+                <div class="print-footer-block">
+                    <!-- Print Signature Area (Professional Grid) -->
+                    <div class="print-signature-area">
+                        <div class="print-signature-grid">
+                            <div class="signature-box">
+                                <p class="title">ผู้จัดทำ</p>
+                                <div class="signature-line"></div>
+                                <p class="date">ลงชื่อ วันที่ ___ / ___ / _____</p>
+                            </div>
+                            <div class="signature-box">
+                                <p class="title">ผู้ตรวจสอบ</p>
+                                <div class="signature-line"></div>
+                                <p class="date">ลงชื่อ วันที่ ___ / ___ / _____</p>
+                            </div>
+                            <div class="signature-box">
+                                <p class="title">ผู้อนุมัติ</p>
+                                <div class="signature-line"></div>
+                                <p class="date">ลงชื่อ วันที่ ___ / ___ / _____</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="exportPdfBtn" class="pdf-btn-luxury">
+                    <i class='bx bxs-file-pdf'></i> บันทึกเป็น PDF
+                </button>
+                <button id="closeDetailsModalBtn" class="premium-btn"
+                    style="width: auto; min-width: 160px; justify-content: center;">ย่อหน้าต่างกลับ</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- Floating action button (fixed bottom-right) -->
+    <button id="floatingOpenSheetBtn" class="fab" aria-label="เปิด Google Sheets" title="เปิด Google Sheets">
+        <i class='bx bxl-google'></i>
+    </button>
+</body>
+
+</html>
