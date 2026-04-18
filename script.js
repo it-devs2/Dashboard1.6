@@ -4,7 +4,7 @@
  */
 const GOOGLE_APP_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzlT9ZOGKz4RgD3Np19SRAVOTNOAd9C-HGbsUFA-F2g-GGU5Th5zpwP2mYnEf4pI7Xe/exec';
 // Optional: link to the Google Sheets UI (set this to your spreadsheet URL if you want a direct link)
-const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1DQ5cBiusMosPtpxOJeO_1lRyf19uvT9Le18__YucbKk/edit?gid=391257604#gid=391257604'
+const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1N0yeiILt8A468mCQw7WQnIhMeeGEKjBO1jSMiHE-hgQ/edit?gid=608803957#gid=608803957'
 
 
 // ตัวแปรเก็บข้อมูลทั้งหมดจาก Google Sheets
