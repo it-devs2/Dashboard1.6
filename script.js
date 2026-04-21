@@ -1858,11 +1858,8 @@ const loadMockData = () => {
 // ==========================================
 // DATE SUMMARY - รวมจำนวนเงินตามวันที่ทำเอกสารจ่าย (คอลัมน์ H)
 // ==========================================
-const updateDateSummary = () => {
-    const grid = document.getElementById('dateSummaryGrid');
-    if (!grid) return;
-
-    // Read section-specific filters
+// Helper to get filtered data for the PayDoc/Date Summary section
+const getFilteredForPayDoc = () => {
     const payDocStatusVal = document.getElementById('payDocStatusFilter')?.value || 'รอโอน';
     const payDocMonthVal = document.getElementById('payDocMonthFilter')?.value || 'all';
     const payDocYearVal = document.getElementById('payDocYearFilter')?.value || 'all';
@@ -1870,9 +1867,7 @@ const updateDateSummary = () => {
     const payDocUrgencyVal = document.getElementById('payDocUrgencyFilter')?.value || 'all';
     const payDocCategoryVal = document.getElementById('payDocCategoryFilter')?.value || 'all';
 
-    // Filter from ALL data (independent from top filters) by paymentStatus + payDoc month/year
-    // Also include new creditor search and urgency filters.
-    const filteredForPayDoc = allData.filter(item => {
+    return allData.filter(item => {
         const matchStatus = payDocStatusVal === 'all' || (item.paymentStatus && item.paymentStatus.toString().includes(payDocStatusVal));
         const matchMonth = payDocMonthVal === 'all' || (item.payDocMonth && item.payDocMonth === payDocMonthVal);
         const matchYear = payDocYearVal === 'all' || (item.payDocYear && parseInt(item.payDocYear) === parseInt(payDocYearVal));
@@ -1892,6 +1887,18 @@ const updateDateSummary = () => {
 
         return matchStatus && matchMonth && matchYear && matchCreditor && matchUrgency && matchCategory;
     });
+};
+
+// ==========================================
+// DATE SUMMARY - รวมจำนวนเงินตามวันที่ทำเอกสารจ่าย (คอลัมน์ H)
+// ==========================================
+const updateDateSummary = () => {
+    const grid = document.getElementById('dateSummaryGrid');
+    if (!grid) return;
+
+    // Filter from ALL data (independent from top filters) by paymentStatus + payDoc month/year
+    // Also include new creditor search and urgency filters.
+    const filteredForPayDoc = getFilteredForPayDoc();
 
     // Group data by payDoc date (column H)
     const dateGroups = {};
@@ -1999,14 +2006,13 @@ const openDateDetailModal = (dateKey) => {
     const tfoot = document.getElementById('dateDetailTableFooter');
 
     // Find matching items by payDoc date (column H) + status filter
-    const payDocStatusVal = document.getElementById('payDocStatusFilter')?.value || 'รอโอน';
-    const items = allData.filter(item => {
-        const matchStatus = payDocStatusVal === 'all' || (item.paymentStatus && item.paymentStatus.toString().includes(payDocStatusVal));
+    // Now using the centralized filtering logic to ensure consistency
+    const items = getFilteredForPayDoc().filter(item => {
         const day = item.payDocDay || '';
         const month = item.payDocMonth || '';
         const year = item.payDocYear || '';
         const itemDateKey = [day, month, year].filter(Boolean).join(' ') || 'ไม่ระบุวันที่';
-        return matchStatus && itemDateKey === dateKey;
+        return itemDateKey === dateKey;
     }).sort((a, b) => {
         // Sort by year (ascending)
         const yearA = parseInt(a.yearDue) || 9999;

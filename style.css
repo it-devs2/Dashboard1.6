@@ -2692,48 +2692,40 @@ html, body {
 
 @media (max-width: 760px) {
     .data-table {
-        font-size: 13px;
+        font-size: 13.5px;
+        min-width: 900px; /* เพิ่มความกว้างเผื่อข้อมูล */
+        table-layout: auto !important; /* ยกเลิก fixed layout เพื่อให้ตารางขยายตามเนื้อหาอัตโนมัติ ขอบจะไม่ทับกัน */
     }
 
-    .data-table th:nth-child(1),
-    .data-table td:nth-child(1) {
-        width: 10%;
+    .table-responsive {
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        display: block;
     }
 
+    .data-table th,
+    .data-table td {
+        white-space: nowrap !important; /* ป้องกันไม่ให้ข้อความตกบรรทัดมั่ว */
+        word-break: normal !important;
+    }
+
+    /* อนุญาตให้บางคอลัมน์ตัดคำบรรทัดใหม่ได้ถ้ายาวเกินไป */
     .data-table th:nth-child(2),
     .data-table td:nth-child(2) {
-        width: 12%;
+        white-space: normal !important;
+        min-width: 160px;
     }
 
     .data-table th:nth-child(3),
     .data-table td:nth-child(3) {
-        width: 15%; /* รายละเอียดบนมือถือให้แคบลง */
-    }
-
-    .data-table th:nth-child(4),
-    .data-table td:nth-child(4) {
-        width: 10%;
-    }
-
-    .data-table th:nth-child(5),
-    .data-table td:nth-child(5) {
-        width: 13%;
-    }
-
-    .data-table th:nth-child(6),
-    .data-table td:nth-child(6) {
-        width: 12%;
-    }
-
-    .data-table th:nth-child(7),
-    .data-table td:nth-child(7) {
-        width: 28%; /* ให้ความสำคัญกับยอดเงินบนมือถือ */
-        text-align: right !important;
+        white-space: normal !important;
+        min-width: 220px;
     }
 
     .modal-content.table-modal {
-        width: calc(100% - 24px);
-        padding: 12px;
+        width: calc(100% - 16px);
+        padding: 16px 8px;
     }
 }
 
